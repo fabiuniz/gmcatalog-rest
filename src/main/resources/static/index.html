@@ -139,7 +139,11 @@
                   {listGames.map((game, index) => (
                     <div key={game.id} className="flex items-center bg-white p-4 rounded shadow">
                       <img src={game.imgUrl} alt={game.title} className="w-16 h-16 object-cover mr-4" />
-                      <div className="flex-1">
+                      <div 
+                        key={game.id}
+                        className="bg-white p-4 rounded shadow cursor-pointer hover:bg-gray-50"
+                        onClick={() => handleGameClick(game.id)}
+                        >
                         <h3 className="text-lg font-semibold">{game.title} ({game.year})</h3>
                         <p className="text-gray-600">{game.shortDescription}</p>
                       </div>
