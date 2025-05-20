@@ -106,22 +106,82 @@ O projeto é desenvolvido em Java e utiliza o framework Spring Boot, que facilit
 
 ---
 
-## Dinâmica de Funcionamento
+### 1. Dinâmica de Funcionamento
+
 
 Aqui está um passo a passo de como o projeto funciona:
 
-1.  **Inicialização da Aplicação:** Quando a aplicação `DslistApplication` é executada, o Spring Boot inicializa o contexto da aplicação. Ele procura por componentes como controladores, serviços e repositórios.
-2.  **Inicialização do Banco de Dados (para o perfil `test`):**
+*  **Inicialização da Aplicação:** Quando a aplicação `DslistApplication` é executada, o Spring Boot inicializa o contexto da aplicação. Ele procura por componentes como controladores, serviços e repositórios.
+*  **Inicialização do Banco de Dados (para o perfil `test`):**
     * Como `spring.profiles.active=test` e o H2 está configurado, o Spring Boot configura um banco de dados H2 em memória.
     * O script `import.sql` é executado, preenchendo a tabela `tb_game` com dados iniciais de jogos.
-3.  **Requisição do Cliente:** Um cliente (por exemplo, um navegador web ou uma aplicação frontend) envia uma requisição HTTP GET para `http://localhost:8080/games` (assumindo a porta padrão do Spring Boot 8080).
-4.  **Invocação do Controlador:** O `GameController` recebe esta requisição devido às suas anotações `@RequestMapping(value = "/games")` e `@GetMapping`.
-5.  **Chamada à Camada de Serviço:** O `GameController` então delega a requisição ao `GameService` chamando seu método `findAll()`.
-6.  **Interação com o Repositório:** O `GameService`, por sua vez, chama o método `findAll()` do `GameRepository`. Este método (fornecido por `JpaRepository`) executa uma consulta SQL para recuperar todos os registros da tabela `tb_game` no banco de dados.
-7.  **Conversão de Entidade para DTO:** O `GameRepository` retorna uma `List<Game>` (uma lista de entidades `Game`). O `GameService` então processa esta lista, convertendo cada entidade `Game` em um objeto `GameMinDTO`. Isso é feito usando um *stream* e a operação `map`, seguida por `toList()` para coletar os resultados. Isso garante que dados sensíveis ou desnecessários não sejam expostos ao cliente.
-8.  **Resposta ao Cliente:** O `GameService` retorna a `List<GameMinDTO>` para o `GameController`. O `GameController` então serializa esta lista em uma resposta JSON (JavaScript Object Notation) e a envia de volta ao cliente.
+*  **Requisição do Cliente:** Um cliente (por exemplo, um navegador web ou uma aplicação frontend) envia uma requisição HTTP GET para `http://vmlinuxd:8080/games` (assumindo a porta padrão do Spring Boot 8080).
+*  **Invocação do Controlador:** O `GameController` recebe esta requisição devido às suas anotações `@RequestMapping(value = "/games")` e `@GetMapping`.
+*  **Chamada à Camada de Serviço:** O `GameController` então delega a requisição ao `GameService` chamando seu método `findAll()`.
+*  **Interação com o Repositório:** O `GameService`, por sua vez, chama o método `findAll()` do `GameRepository`. Este método (fornecido por `JpaRepository`) executa uma consulta SQL para recuperar todos os registros da tabela `tb_game` no banco de dados.
+*  **Conversão de Entidade para DTO:** O `GameRepository` retorna uma `List<Game>` (uma lista de entidades `Game`). O `GameService` então processa esta lista, convertendo cada entidade `Game` em um objeto `GameMinDTO`. Isso é feito usando um *stream* e a operação `map`, seguida por `toList()` para coletar os resultados. Isso garante que dados sensíveis ou desnecessários não sejam expostos ao cliente.
+*  **Resposta ao Cliente:** O `GameService` retorna a `List<GameMinDTO>` para o `GameController`. O `GameController` então serializa esta lista em uma resposta JSON (JavaScript Object Notation) e a envia de volta ao cliente.
 
 Em resumo, este projeto oferece uma **API de backend** simples, mas eficaz, para gerenciar uma lista de jogos, demonstrando conceitos essenciais do Spring Boot, como **controladores REST, serviços, repositórios, entidades JPA, DTOs e integração com banco de dados.**
+
+
+### 2. Modelagem de Dados (Entidades)
+
+O projeto possui um modelo de dados relacional mapeado para objetos Java usando JPA (Java Persistence API) com Hibernate:
+
+* **`Game.java`**: Representa um jogo no banco de dados (`tb_game`), contendo informações detalhadas como título, ano, gênero, plataformas, pontuação, URLs de imagem e descrições.
+* **`GameList.java`**: Representa uma lista de jogos (`tb_game_list`), com um ID e um nome.
+* **`Belonging.java`**: Representa a relação muitos-para-muitos entre `Game` e `GameList`, indicando que um jogo pertence a uma lista. Contém um campo `position` para ordenar os jogos dentro de uma lista.
+* **`BelongingPK.java`**: É uma classe `@Embeddable` que serve como chave primária composta para a entidade `Belonging`, contendo referências a `Game` e `GameList`.
+
+### 3. Camada de Repositórios
+
+* **`GameRepository.java`**: Estende `JpaRepository`, fornecendo métodos CRUD básicos para a entidade `Game`. Contém uma consulta nativa (`@Query`) para buscar jogos que pertencem a uma lista específica, ordenados pela posição, retornando uma `GameMinProjection`.
+* **`GameListRepository.java`**: Também estende `JpaRepository`, fornecendo métodos CRUD para a entidade `GameList`. Inclui um método `@Modifying` com `@Query` para atualizar a posição de um jogo dentro de uma lista.
+
+### 4. Camada de Serviços
+
+A camada de serviço contém a lógica de negócios e orquestra as operações com os repositórios:
+
+* **`GameService.java`**:
+    * `findById(Long id)`: Busca um jogo pelo ID e retorna um `GameDTO` (uma versão mais completa dos dados do jogo).
+    * `findAll()`: Retorna uma lista de todos os jogos, mapeados para `GameMinDTO` (uma versão resumida dos dados do jogo).
+    * `findByGameList(Long listId)`: Busca todos os jogos pertencentes a uma lista específica, utilizando a projeção `GameMinProjection` para otimizar a consulta e mapeando-os para `GameMinDTO`.
+* **`GameListService.java`**:
+    * `findAll()`: Retorna uma lista de todas as listas de jogos, mapeadas para `GameListDTO`.
+    * `move(Long listId, int sourceIndex, int destinationIndex)`: Este é um método transacional complexo que permite reordenar os jogos dentro de uma lista. Ele recupera os jogos da lista, remove o jogo da posição de origem, insere-o na posição de destino e, em seguida, atualiza as posições de todos os jogos afetados no banco de dados.
+
+### 5. Camada de DTOs (Data Transfer Objects)
+
+DTOs são usados para transferir dados entre as camadas da aplicação (por exemplo, do serviço para o controlador) e para expor apenas os dados necessários aos clientes:
+
+* **`GameDTO.java`**: Representação completa de um `Game` para detalhes específicos de um jogo.
+* **`GameMinDTO.java`**: Representação mínima de um `Game`, usada para listagens rápidas. Pode ser criada a partir de uma entidade `Game` ou de uma `GameMinProjection`.
+* **`GameListDTO.java`**: Representação de uma `GameList`, contendo apenas o ID e o nome.
+* **`ReplacementDTO.java`**: Usado para receber os índices de origem e destino ao mover um jogo dentro de uma lista.
+
+### 6. Camada de Controladores (APIs RESTful)
+
+Os controladores expõem os endpoints da API, recebendo requisições HTTP e retornando respostas:
+
+* **`GameController.java`**:
+    * `GET /games`: Retorna uma lista de todos os jogos (`List<GameMinDTO>`).
+    * `GET /games/{id}`: Retorna os detalhes completos de um jogo específico pelo seu ID (`GameDTO`).
+* **`GameListController.java`**:
+    * `GET /lists`: Retorna uma lista de todas as listas de jogos (`List<GameListDTO>`).
+    * `GET /lists/{listId}/games`: Retorna os jogos que pertencem a uma lista específica, ordenados pela posição (`List<GameMinDTO>`).
+    * `POST /lists/{listId}/replacement`: Permite reordenar os jogos dentro de uma lista. Recebe um `ReplacementDTO` no corpo da requisição com os índices de origem e destino.
+
+### 7. Configuração Adicional
+
+* **`WebConfig.java`**: Configura o **CORS (Cross-Origin Resource Sharing)**, permitindo que aplicações frontend de domínios específicos (definidos na propriedade `cors.origins` nos arquivos `.properties`) acessem a API.
+* **Arquivos de Propriedades (`application.properties`, `application-test.properties`, etc.)**:
+    * `spring.datasource.url`, `username`, `password`: Definem as credenciais e URL do banco de dados (H2 para `test`, PostgreSQL para `dev`/`prod`).
+    * `spring.h2.console.enabled=true` e `spring.h2.console.path=/h2-console`: Habilitam o console H2 para visualizar o banco de dados em memória.
+    * `spring.jpa.show-sql=true`: Mostra as queries SQL geradas pelo Hibernate no console.
+    * `spring.jpa.hibernate.ddl-auto=none`: Indica que o Hibernate não deve gerenciar automaticamente o esquema do banco de dados (o que é comum em produção, onde o esquema é gerenciado manualmente ou por scripts de migração).
+
+
 ## Como Executar a Aplicação
 
 1.  **Pré-requisitos:**
@@ -164,3 +224,11 @@ Gostaria de expressar minha profunda gratidão:
 Este projeto é um resultado direto do conhecimento e das ferramentas disponibilizadas durante o Intensivão Java Spring. Muito obrigado!
 
 
+
+
+
+
+
+
+
+clear; mvn clean install ; mvn spring-boot:run
