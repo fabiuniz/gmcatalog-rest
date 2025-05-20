@@ -17,11 +17,11 @@
 
     // Component for the entire app
     function App() {
-      const [games, setGames] = useState([]);
-      const [gameLists, setGameLists] = useState([]);
-      const [selectedGame, setSelectedGame] = useState(null);
-      const [selectedList, setSelectedList] = useState(null);
-      const [listGames, setListGames] = useState([]);
+      const [games, setGames] = useState([]); // Todos os jogos
+      const [gameLists, setGameLists] = useState([]); // Todas as listas de jogos
+      const [selectedGame, setSelectedGame] = useState(null); // Jogo detalhado selecionado
+      const [selectedList, setSelectedList] = useState(null); // Lista de jogos selecionada
+      const [listGames, setListGames] = useState([]); // Jogos da lista selecionada
       const [error, setError] = useState(null);
 
       // Backend API base URL (now relative since front-end and back-end are on the same origin)
@@ -69,8 +69,12 @@
         }
       }, [selectedList]);
 
-      // Fetch game details when a game is selected
+      // Fetch game details when a game is clicked
       const handleGameClick = (gameId) => {
+        // Quando um jogo é clicado, sempre limpe a lista selecionada
+        // para garantir que a visão mude para os detalhes do jogo.
+        setSelectedList(null);
+        setError(null); // Limpa erros anteriores
         fetch(`${API_BASE_URL}/games/${gameId}`)
           .then(res => {
             if (!res.ok) throw new Error("Failed to fetch game details");
@@ -86,13 +90,15 @@
       // Handle list selection
       const handleListClick = (list) => {
         setSelectedList(list);
-        setSelectedGame(null);
+        setSelectedGame(null); // Limpa o jogo selecionado para mostrar a lista
+        setError(null); // Limpa erros anteriores
       };
 
       // Handle game reordering in a list
       const handleMove = (sourceIndex, destinationIndex) => {
-        if (!selectedList) return;
+        if (!selectedList) return; // Só move se uma lista estiver selecionada
 
+        setError(null); // Limpa erros anteriores
         fetch(`${API_BASE_URL}/lists/${selectedList.id}/replacement`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -100,7 +106,7 @@
         })
           .then(res => {
             if (!res.ok) throw new Error("Failed to move game");
-            // Refresh the list games after moving
+            // Atualiza a lista de jogos após mover
             return fetch(`${API_BASE_URL}/lists/${selectedList.id}/games`);
           })
           .then(res => res.json())
@@ -111,11 +117,24 @@
           });
       };
 
+      // Função para voltar à tela de todos os jogos
+      const handleBackToAllGames = () => {
+          setSelectedGame(null);
+          setSelectedList(null); // Garante que nenhuma lista esteja selecionada também
+      };
+
       return (
         <div className="flex h-screen">
           {/* Sidebar for game lists */}
           <div className="w-1/4 bg-gray-800 text-white p-4">
             <h2 className="text-xl font-bold mb-4">Game Lists</h2>
+            {/* Opção para ver todos os jogos */}
+            <div
+              className={`p-2 mb-2 rounded cursor-pointer ${!selectedList && !selectedGame ? "bg-gray-600" : "bg-gray-700"} hover:bg-gray-600`}
+              onClick={handleBackToAllGames}
+            >
+              All Games
+            </div>
             {gameLists.map(list => (
               <div
                 key={list.id}
@@ -132,22 +151,40 @@
             <h1 className="text-3xl font-bold mb-6">Game Catalog</h1>
             {error && <div className="text-red-500 p-4">{error}</div>}
 
-            {selectedList ? (
-              <div>
+            {/* Renderiza os detalhes do jogo se selectedGame não for null */}
+            {selectedGame ? (
+              <div className="bg-white p-6 rounded shadow">
+                <h2 className="text-2xl font-semibold mb-4">{selectedGame.title}</h2>
+                <img src={selectedGame.imgUrl} alt={selectedGame.title} className="w-48 h-48 object-cover mb-4" />
+                <p><strong>Year:</strong> {selectedGame.year}</p>
+                <p><strong>Genre:</strong> {selectedGame.genre}</p>
+                <p><strong>Platforms:</strong> {selectedGame.platforms}</p>
+                <p><strong>Score:</strong> {selectedGame.score}</p>
+                <p><strong>Short Description:</strong> {selectedGame.shortDescription}</p>
+                <p><strong>Long Description:</strong> {selectedGame.longDescription}</p>
+                <button
+                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded"
+                  onClick={handleBackToAllGames}
+                >
+                  Back to All Games
+                </button>
+              </div>
+            ) : selectedList ? (
+              // Corrected structure: no extra div wrapping <h2> and the grid div
+              <> {/* Use a JSX Fragment here to wrap adjacent elements */}
                 <h2 className="text-2xl font-semibold mb-4">{selectedList.name}</h2>
                 <div className="grid grid-cols-1 gap-4">
                   {listGames.map((game, index) => (
                     <div key={game.id} className="flex items-center bg-white p-4 rounded shadow">
                       <img src={game.imgUrl} alt={game.title} className="w-16 h-16 object-cover mr-4" />
-                      <div 
-                        key={game.id}
-                        className="bg-white p-4 rounded shadow cursor-pointer hover:bg-gray-50"
+                      <div
+                        className="flex-grow bg-white p-4 rounded shadow cursor-pointer hover:bg-gray-50"
                         onClick={() => handleGameClick(game.id)}
-                        >
+                      >
                         <h3 className="text-lg font-semibold">{game.title} ({game.year})</h3>
                         <p className="text-gray-600">{game.shortDescription}</p>
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-2 ml-4">
                         <button
                           className="bg-blue-500 text-white px-2 py-1 rounded disabled:bg-gray-400"
                           onClick={() => handleMove(index, index - 1)}
@@ -166,24 +203,7 @@
                     </div>
                   ))}
                 </div>
-              </div>
-            ) : selectedGame ? (
-              <div className="bg-white p-6 rounded shadow">
-                <h2 className="text-2xl font-semibold mb-4">{selectedGame.title}</h2>
-                <img src={selectedGame.imgUrl} alt={selectedGame.title} className="w-48 h-48 object-cover mb-4" />
-                <p><strong>Year:</strong> {selectedGame.year}</p>
-                <p><strong>Genre:</strong> {selectedGame.genre}</p>
-                <p><strong>Platforms:</strong> {selectedGame.platforms}</p>
-                <p><strong>Score:</strong> {selectedGame.score}</p>
-                <p><strong>Short Description:</strong> {selectedGame.shortDescription}</p>
-                <p><strong>Long Description:</strong> {selectedGame.longDescription}</p>
-                <button
-                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded"
-                  onClick={() => setSelectedGame(null)}
-                >
-                  Back to Games
-                </button>
-              </div>
+              </>
             ) : (
               <div className="grid grid-cols-2 gap-4">
                 {games.map(game => (
