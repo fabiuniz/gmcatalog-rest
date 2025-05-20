@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DSList - Game Catalog</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.22.9/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Component for the entire app
+    function App() {
+      const [games, setGames] = useState([]);
+      const [gameLists, setGameLists] = useState([]);
+      const [selectedGame, setSelectedGame] = useState(null);
+      const [selectedList, setSelectedList] = useState(null);
+      const [listGames, setListGames] = useState([]);
+      const [error, setError] = useState(null);
+
+      // Backend API base URL (now relative since front-end and back-end are on the same origin)
+      const API_BASE_URL = "";
+
+      // Fetch all games and lists on mount
+      useEffect(() => {
+        setError(null);
+        fetch(`${API_BASE_URL}/games`)
+          .then(res => {
+            if (!res.ok) throw new Error("Failed to fetch games");
+            return res.json();
+          })
+          .then(data => setGames(data))
+          .catch(err => {
+            console.error("Error fetching games:", err);
+            setError("Unable to load games. Please ensure the backend is running.");
+          });
+
+        fetch(`${API_BASE_URL}/lists`)
+          .then(res => {
+            if (!res.ok) throw new Error("Failed to fetch lists");
+            return res.json();
+          })
+          .then(data => setGameLists(data))
+          .catch(err => {
+            console.error("Error fetching lists:", err);
+            setError("Unable to load lists. Please ensure the backend is running.");
+          });
+      }, []);
+
+      // Fetch games for a selected list
+      useEffect(() => {
+        if (selectedList) {
+          fetch(`${API_BASE_URL}/lists/${selectedList.id}/games`)
+            .then(res => {
+              if (!res.ok) throw new Error("Failed to fetch list games");
+              return res.json();
+            })
+            .then(data => setListGames(data))
+            .catch(err => {
+              console.error("Error fetching list games:", err);
+              setError("Unable to load games for this list.");
+            });
+        }
+      }, [selectedList]);
+
+      // Fetch game details when a game is selected
+      const handleGameClick = (gameId) => {
+        fetch(`${API_BASE_URL}/games/${gameId}`)
+          .then(res => {
+            if (!res.ok) throw new Error("Failed to fetch game details");
+            return res.json();
+          })
+          .then(data => setSelectedGame(data))
+          .catch(err => {
+            console.error("Error fetching game details:", err);
+            setError("Unable to load game details.");
+          });
+      };
+
+      // Handle list selection
+      const handleListClick = (list) => {
+        setSelectedList(list);
+        setSelectedGame(null);
+      };
+
+      // Handle game reordering in a list
+      const handleMove = (sourceIndex, destinationIndex) => {
+        if (!selectedList) return;
+
+        fetch(`${API_BASE_URL}/lists/${selectedList.id}/replacement`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sourceIndex, destinationIndex }),
+        })
+          .then(res => {
+            if (!res.ok) throw new Error("Failed to move game");
+            // Refresh the list games after moving
+            return fetch(`${API_BASE_URL}/lists/${selectedList.id}/games`);
+          })
+          .then(res => res.json())
+          .then(data => setListGames(data))
+          .catch(err => {
+            console.error("Error moving game:", err);
+            setError("Unable to reorder games.");
+          });
+      };
+
+      return (
+        <div className="flex h-screen">
+          {/* Sidebar for game lists */}
+          <div className="w-1/4 bg-gray-800 text-white p-4">
+            <h2 className="text-xl font-bold mb-4">Game Lists</h2>
+            {gameLists.map(list => (
+              <div
+                key={list.id}
+                className={`p-2 mb-2 rounded cursor-pointer ${selectedList?.id === list.id ? "bg-gray-600" : "bg-gray-700"} hover:bg-gray-600`}
+                onClick={() => handleListClick(list)}
+              >
+                {list.name}
+              </div>
+            ))}
+          </div>
+
+          {/* Main content area */}
+          <div className="w-3/4 p-6">
+            <h1 className="text-3xl font-bold mb-6">Game Catalog</h1>
+            {error && <div className="text-red-500 p-4">{error}</div>}
+
+            {selectedList ? (
+              <div>
+                <h2 className="text-2xl font-semibold mb-4">{selectedList.name}</h2>
+                <div className="grid grid-cols-1 gap-4">
+                  {listGames.map((game, index) => (
+                    <div key={game.id} className="flex items-center bg-white p-4 rounded shadow">
+                      <img src={game.imgUrl} alt={game.title} className="w-16 h-16 object-cover mr-4" />
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold">{game.title} ({game.year})</h3>
+                        <p className="text-gray-600">{game.shortDescription}</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          className="bg-blue-500 text-white px-2 py-1 rounded disabled:bg-gray-400"
+                          onClick={() => handleMove(index, index - 1)}
+                          disabled={index === 0}
+                        >
+                          ↑
+                        </button>
+                        <button
+                          className="bg-blue-500 text-white px-2 py-1 rounded disabled:bg-gray-400"
+                          onClick={() => handleMove(index, index + 1)}
+                          disabled={index === listGames.length - 1}
+                        >
+                          ↓
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : selectedGame ? (
+              <div className="bg-white p-6 rounded shadow">
+                <h2 className="text-2xl font-semibold mb-4">{selectedGame.title}</h2>
+                <img src={selectedGame.imgUrl} alt={selectedGame.title} className="w-48 h-48 object-cover mb-4" />
+                <p><strong>Year:</strong> {selectedGame.year}</p>
+                <p><strong>Genre:</strong> {selectedGame.genre}</p>
+                <p><strong>Platforms:</strong> {selectedGame.platforms}</p>
+                <p><strong>Score:</strong> {selectedGame.score}</p>
+                <p><strong>Short Description:</strong> {selectedGame.shortDescription}</p>
+                <p><strong>Long Description:</strong> {selectedGame.longDescription}</p>
+                <button
+                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded"
+                  onClick={() => setSelectedGame(null)}
+                >
+                  Back to Games
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                {games.map(game => (
+                  <div
+                    key={game.id}
+                    className="bg-white p-4 rounded shadow cursor-pointer hover:bg-gray-50"
+                    onClick={() => handleGameClick(game.id)}
+                  >
+                    <img src={game.imgUrl} alt={game.title} className="w-32 h-32 object-cover mb-2 mx-auto" />
+                    <h3 className="text-lg font-semibold">{game.title} ({game.year})</h3>
+                    <p className="text-gray-600">{game.shortDescription}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Render the app using createRoot
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
