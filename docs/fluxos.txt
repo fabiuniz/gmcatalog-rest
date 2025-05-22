@@ -1,0 +1,7 @@
+Fluxos de Dados em APIs Spring
+1. Requisição de Leitura (GET) Padrão:
+Controller → Service → Repositories → Entities → Service → DTOs → Controller
+2. Requisição de Leitura (GET) Otimizada com Projections:
+Controller → Service → Repositories → Projections → Service → DTOs → Controller
+3. Requisição de Escrita (POST/PUT):
+Controller → DTOs → Service → Entities 14:06 22/05/2025→ Repositories → Service → Controller
