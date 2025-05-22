@@ -8,47 +8,38 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.dslist.dto.GameListDTO;
 import com.devsuperior.dslist.entities.GameList;
+import com.devsuperior.dslist.projections.GameMinProjection;
 import com.devsuperior.dslist.repositories.GameListRepository;
-
-import com.devsuperior.dslist.dto.ReplacementDTO;
-import com.devsuperior.dslist.entities.Belonging;
-import com.devsuperior.dslist.repositories.BelongingRepository;
+import com.devsuperior.dslist.repositories.GameRepository;
 
 @Service
 public class GameListService {
 
-	@Autowired
-	private GameListRepository gameListRepository;
+    @Autowired
+    private GameListRepository gameListRepository;
+    
+    @Autowired
+    private GameRepository gameRepository;
+    
+    @Transactional(readOnly = true)
+    public List<GameListDTO> findAll() {
+        List<GameList> result = gameListRepository.findAll();
+        return result.stream().map(GameListDTO::new).toList();
+    }
+    
+    @Transactional
+    public void move(Long listId, int sourceIndex, int destinationIndex) {
 
-	@Autowired
-	private BelongingRepository belongingRepository;
+        List<GameMinProjection> list = gameRepository.searchByList(listId);
 
-	
-	@Transactional(readOnly = true)
-	public List<GameListDTO> findAll() {
-		List<GameList> result = gameListRepository.findAll();
-		return result.stream().map(GameListDTO::new).toList();
-	}
-	@Transactional
-    public void move(Long listId, ReplacementDTO body) {
-        List<Belonging> belongings = belongingRepository.findByListId(listId);
+        GameMinProjection obj = list.remove(sourceIndex);
+        list.add(destinationIndex, obj);
 
-        int sourceIndex = body.getSourceIndex();
-        int destinationIndex = body.getDestinationIndex();
+        int min = sourceIndex < destinationIndex ? sourceIndex : destinationIndex;
+        int max = sourceIndex < destinationIndex ? destinationIndex : sourceIndex;
 
-        if (sourceIndex < 0 || sourceIndex >= belongings.size() || 
-            destinationIndex < 0 || destinationIndex >= belongings.size()) {
-            throw new IllegalArgumentException("Invalid source or destination index");
+        for (int i = min; i <= max; i++) {
+            gameListRepository.updateBelongingPosition(listId, list.get(i).getId(), i);
         }
-
-        Belonging sourceBelonging = belongings.get(sourceIndex);
-        belongings.remove(sourceIndex);
-        belongings.add(destinationIndex, sourceBelonging);
-
-        for (int i = 0; i < belongings.size(); i++) {
-            belongings.get(i).setPosition(i);
-        }
-
-        belongingRepository.saveAll(belongings);
     }
 }
