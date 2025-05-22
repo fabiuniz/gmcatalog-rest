@@ -31,7 +31,7 @@ clear; mvn clean install ; mvn spring-boot:run
 #http://vmlinuxd:8080/h2-console
 #http://vmlinuxd:8080/swagger-ui/index.html
 #http://vmlinuxd:8080
-#http://vmlinuxd:5050/ pgamin
+#http://vmlinuxd:5050 pgamin
 #PGADMIN_DEFAULT_EMAIL: me@example.com
 #Servers->registrar->servidor->general->name=Postgress-local-docker
 #Servers->registrar->servidor->Connection->hostname/adress=pg-docker

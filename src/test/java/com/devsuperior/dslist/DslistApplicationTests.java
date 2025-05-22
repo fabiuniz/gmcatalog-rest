@@ -1,4 +1,4 @@
-package com.devsuperior.dslist;
+package com.gamecatalog.dslist;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

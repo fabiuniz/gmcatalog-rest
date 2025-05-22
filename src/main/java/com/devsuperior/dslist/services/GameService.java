@@ -1,4 +1,4 @@
-package com.devsuperior.dslist.services;
+package com.gamecatalog.dslist.services;
 
 import java.util.List;
 
@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.devsuperior.dslist.dto.GameDTO;
-import com.devsuperior.dslist.dto.GameMinDTO;
-import com.devsuperior.dslist.entities.Game;
-import com.devsuperior.dslist.projections.GameMinProjection;
-import com.devsuperior.dslist.repositories.GameRepository;
+import com.gamecatalog.dslist.dto.GameDTO;
+import com.gamecatalog.dslist.dto.GameMinDTO;
+import com.gamecatalog.dslist.entities.Game;
+import com.gamecatalog.dslist.projections.GameMinProjection;
+import com.gamecatalog.dslist.repositories.GameRepository;
 
 @Service
 public class GameService {

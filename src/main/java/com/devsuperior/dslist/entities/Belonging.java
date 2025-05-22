@@ -1,4 +1,4 @@
-package com.devsuperior.dslist.entities;
+package com.gamecatalog.dslist.entities;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package com.devsuperior.dslist;
+package com.gamecatalog.dslist;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

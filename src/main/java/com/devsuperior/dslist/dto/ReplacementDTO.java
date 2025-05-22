@@ -1,4 +1,4 @@
-package com.devsuperior.dslist.dto;
+package com.gamecatalog.dslist.dto;
 
 public class ReplacementDTO {
     private Integer sourceIndex;

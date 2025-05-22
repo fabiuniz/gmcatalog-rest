@@ -3,52 +3,51 @@
 Este projeto foi desenvolvido durante o Intensivão Java Spring, edição de maio de 2025, ministrado por **Nélio Alves** do **DevSuperior**.
 
 
-
 Este projeto representa um passo importante na minha jornada para a carreira backend Java, uma área com grande demanda e excelentes oportunidades no mercado de desenvolvimento.
 
 
 Obrigado a todos!
 
-## Visão Geral
 
+
+## Visão Geral
 
 ![Logo](images/dslist.png)
 
+O `dslist` é uma aplicação backend desenvolvida com **Java** e o framework **Spring Boot**. Seu objetivo principal é gerenciar listas de jogos, permitindo a criação de listas personalizadas e a organização de jogos dentro dessas listas. A aplicação segue a arquitetura de uma **API RESTful**, possibilitando a interação com os dados por meio de requisições HTTP. Vamos entender como ele funciona:
 
 
-O `dslist` é uma aplicação backend construída com Java e o framework Spring Boot. O objetivo principal deste projeto é fornecer funcionalidades para gerenciar listas de jogos, permitindo a criação de listas personalizadas e a organização dos jogos dentro dessas listas. Ele segue a arquitetura de uma **API RESTful**, permitindo que os clientes interajam com os dados dos jogos através de requisições HTTP. Vamos entender como ele funciona:
-
-A aplicação oferece as seguintes funcionalidades:
-
-* Listar todos os jogos.
-* Buscar detalhes de um jogo específico pelo seu ID.
-* Listar todas as listas de jogos.
-* Listar os jogos pertencentes a uma lista específica.
-* Permitir a movimentação de jogos entre diferentes posições dentro de uma mesma lista.
+### Funcionalidades
+- **Listar todos os jogos**: Retorna uma lista de jogos com informações resumidas.
+- **Buscar detalhes de um jogo**: Recupera informações completas de um jogo específico pelo seu ID.
+- **Listar todas as listas de jogos**: Retorna todas as listas de jogos disponíveis.
+- **Listar jogos de uma lista específica**: Exibe os jogos pertencentes a uma lista, ordenados por posição.
+- **Movimentar jogos em uma lista**: Permite reordenar jogos dentro de uma mesma lista.
 
 ## Tecnologias Utilizadas
 
-* **Java:** Linguagem de programação principal.
-* **Spring Boot:** Framework Java para desenvolvimento rápido de aplicações web e microsserviços.
-* **Spring Web:** Módulo do Spring para construir aplicações web.
-* **Spring Data JPA:** Módulo do Spring para simplificar o acesso e a manipulação de dados com o JPA (Java Persistence API).
-* **Hibernate:** Implementação do JPA utilizada pelo Spring Data JPA.
-* **H2 Database (em memória):** Banco de dados relacional em memória utilizado para desenvolvimento e testes.
-* **Lombok:** Biblioteca Java para reduzir a quantidade de código boilerplate.
-* **Maven:** Ferramenta de gerenciamento de dependências e build.
+- **Java**: Linguagem de programação principal (versão 21).
+- **Spring Boot**: Framework para desenvolvimento rápido de aplicações web e microsserviços.
+- **Spring Web**: Módulo para construção de APIs RESTful com Spring MVC.
+- **Spring Data JPA**: Facilita o acesso e manipulação de dados com JPA.
+- **Hibernate**: Implementação do JPA para mapeamento objeto-relacional.
+- **H2 Database**: Banco de dados em memória para desenvolvimento e testes.
+- **PostgreSQL**: Banco de dados relacional para ambientes de produção.
+- **Lombok**: Biblioteca para reduzir código boilerplate.
+- **Maven**: Ferramenta de gerenciamento de dependências e build.
 
 ## Resumo da Estrutura do Projeto
 
-A estrutura do projeto segue as convenções do Spring Boot, organizada em pacotes para separar as responsabilidades:
+O projeto segue as convenções do Spring Boot, com uma organização em pacotes para separação de responsabilidades:
 
-* `com.devsuperior.dslist`: Pacote principal da aplicação.
-* `com.devsuperior.dslist.config`: Contém classes de configuração, como a configuração de CORS (`WebConfig`).
-* `com.devsuperior.dslist.controllers`: Contém os controladores REST que expõem os endpoints da API (`GameController`, `GameListController`).
-* `com.devsuperior.dslist.dto`: Contém os Data Transfer Objects (DTOs) utilizados para transportar dados entre a API e a camada de serviço (`GameDTO`, `GameListDTO`, `GameMinDTO`, `ReplacementDTO`).
-* `com.devsuperior.dslist.entities`: Contém as classes de entidade que representam as tabelas do banco de dados (`Belonging`, `BelongingPK`, `Game`, `GameList`).
-* `com.devsuperior.dslist.projections`: Contém interfaces que definem projeções para consultas JPQL (`GameMinProjection`).
-* `com.devsuperior.dslist.repositories`: Contém as interfaces de repositório que estendem `JpaRepository` para acesso aos dados (`GameListRepository`, `GameRepository`).
-* `com.devsuperior.dslist.services`: Contém as classes de serviço que implementam a lógica de negócios da aplicação (`GameListService`, `GameService`).
+- `com.gamecatalog.dslist`: Pacote raiz da aplicação.
+- `com.gamecatalog.dslist.config`: Configurações, como CORS (`WebConfig`).
+- `com.gamecatalog.dslist.controllers`: Controladores REST (`GameController`, `GameListController`).
+- `com.gamecatalog.dslist.dto`: DTOs para transporte de dados (`GameDTO`, `GameListDTO`, `GameMinDTO`, `ReplacementDTO`).
+- `com.gamecatalog.dslist.entities`: Entidades do banco de dados (`Belonging`, `BelongingPK`, `Game`, `GameList`).
+- `com.gamecatalog.dslist.projections`: Projeções para consultas JPQL (`GameMinProjection`).
+- `com.gamecatalog.dslist.repositories`: Repositórios JPA (`GameListRepository`, `GameRepository`).
+- `com.gamecatalog.dslist.services`: Lógica de negócios (`GameListService`, `GameService`).
 
 ---
 
@@ -67,7 +66,7 @@ O projeto é desenvolvido em Java e utiliza o framework Spring Boot, que facilit
 * **Maven Wrapper (`mvnw`, `mvnw.cmd`):** Scripts que permitem compilar o projeto sem ter o Maven instalado globalmente em sua máquina. Eles baixam uma versão específica do Maven se necessário.
 * **`DslistApplication.java`**: É o ponto de entrada principal da aplicação Spring Boot. A anotação `@SpringBootApplication` combina `@Configuration`, `@EnableAutoConfiguration` e `@ComponentScan`, tornando-o uma aplicação Spring Boot típica.
 * **`Game` (Entidade):**
-    * Localizada em `com.devsuperior.dslist.entities`.
+    * Localizada em `com.gamecatalog.dslist.entities`.
     * Representa um jogo no banco de dados.
     * Anotada com `@Entity` e `@Table(name = "tb_game")` para mapeá-la à tabela `tb_game`.
     * Usa `@Id` e `@GeneratedValue(strategy = GenerationType.IDENTITY)` para geração automática de ID.
@@ -75,19 +74,19 @@ O projeto é desenvolvido em Java e utiliza o framework Spring Boot, que facilit
     * `@Column(name = "game_year")` mapeia explicitamente o campo `year` para uma coluna chamada `game_year`.
     * `@Column(columnDefinition = "TEXT")` é usado para `shortDescription` e `longDescription` para permitir entradas de texto mais longas no banco de dados.
 * **`GameMinDTO` (Objeto de Transferência de Dados - DTO):**
-    * Localizada em `com.devsuperior.dslist.dto`.
+    * Localizada em `com.gamecatalog.dslist.dto`.
     * Uma representação simplificada de uma entidade `Game`, contendo apenas `id`, `title`, `year`, `imgUrl` e `shortDescription`.
     * DTOs são usados para transferir dados entre camadas (por exemplo, da camada de serviço para o controlador) e para expor apenas as informações necessárias ao cliente, melhorando a segurança e o desempenho.
 * **`GameRepository` (Repositório):**
-    * Localizada em `com.devsuperior.dslist.repositories`.
+    * Localizada em `com.gamecatalog.dslist.repositories`.
     * Uma interface que estende `JpaRepository`, fornecendo operações CRUD (Criar, Ler, Atualizar, Excluir) padrão para a entidade `Game` sem a necessidade de escrever código repetitivo.
 * **`GameService` (Serviço):**
-    * Localizada em `com.devsuperior.dslist.services`.
+    * Localizada em `com.gamecatalog.dslist.services`.
     * Anotada com `@Service`, indicando que é um componente de lógica de negócios.
     * Usa `@Autowired` para injetar `GameRepository`.
     * Contém o método `findAll()`, que recupera todas as entidades `Game` do banco de dados, as converte em objetos `GameMinDTO` e retorna uma lista desses DTOs. Essa transformação garante que apenas os dados mínimos necessários sejam expostos.
 * **`GameController` (Controlador):**
-    * Localizada em `com.devsuperior.dslist.controllers`.
+    * Localizada em `com.gamecatalog.dslist.controllers`.
     * Anotada com `@RestController` e `@RequestMapping(value = "/games")`, indicando que é um controlador REST que lida com requisições para o endpoint `/games`.
     * Usa `@Autowired` para injetar `GameService`.
     * A anotação `@GetMapping` no método `findAll()` mapeia as requisições HTTP GET para `/games` a este método, que então chama o `GameService` para buscar os dados do jogo e retorná-los ao cliente.
@@ -102,7 +101,8 @@ O projeto é desenvolvido em Java e utiliza o framework Spring Boot, que facilit
         * `spring.jpa.open-in-view=false`: Uma configuração comum em APIs REST para evitar problemas de carregamento lento (lazy loading) fora de uma transação.
         * `spring.h2.console.settings.web-allow-others=true`: Permite conexões remotas ao console H2, útil em algumas configurações de desenvolvimento.
         * `cors.origins`: Define as origens permitidas para o Compartilhamento de Recursos de Origem Cruzada (CORS), permitindo que aplicações frontend de URLs específicas acessem a API.
-* **`import.sql`:** Este arquivo (localizado em `src/main/resources`) é executado automaticamente pelo Spring Boot/Hibernate quando a aplicação é iniciada, se um banco de dados em memória como o H2 for usado. É tipicamente usado para preencher o banco de dados com dados iniciais para desenvolvimento e testes.
+* **`import.sql`:** Este arquivo (localizado em `src/main/images`) é executado automaticamente pelo Spring Boot/Hibernate quando a aplicação é iniciada, se um banco de dados em memória como o H2 for usado. É tipicamente usado para preencher o banco de dados com dados iniciais para desenvolvimento e testes.
+
 
 ---
 
@@ -172,6 +172,21 @@ Os controladores expõem os endpoints da API, recebendo requisições HTTP e ret
     * `GET /lists/{listId}/games`: Retorna os jogos que pertencem a uma lista específica, ordenados pela posição (`List<GameMinDTO>`).
     * `POST /lists/{listId}/replacement`: Permite reordenar os jogos dentro de uma lista. Recebe um `ReplacementDTO` no corpo da requisição com os índices de origem e destino.
 
+### Nova Ferramenta: `joinfiles.bat`
+Adicionamos o script `joinfiles.bat` para facilitar a consolidação de arquivos de código-fonte e configuração em um único arquivo de texto. Este script é útil para documentação, revisão de código ou compartilhamento do projeto.
+
+- **Função**: Concatena arquivos `.java`, `.xml` e `.properties` de uma pasta especificada em um único arquivo de saída (ex.: `<pasta>.txt`), com separadores para cada arquivo.
+- **Uso**:
+  ```bash
+  joinfiles.bat <caminho_da_pasta>
+  ```
+- **Saída**: Gera um arquivo `<pasta>.txt` com o conteúdo dos arquivos encontrados, separados por `//---------------- <caminho_do_arquivo>`.
+- **Exemplo**:
+  ```bash
+  joinfiles.bat src
+  ```
+  Isso cria `src.txt` com todos os arquivos `.java`, `.xml` e `.properties` da pasta `src`.
+
 ### 7. Configuração Adicional
 
 * **`WebConfig.java`**: Configura o **CORS (Cross-Origin Resource Sharing)**, permitindo que aplicações frontend de domínios específicos (definidos na propriedade `cors.origins` nos arquivos `.properties`) acessem a API.
@@ -203,7 +218,7 @@ Os controladores expõem os endpoints da API, recebendo requisições HTTP e ret
         ```
 
     * **Executando a classe principal:**
-        Localize a classe `DslistApplication.java` dentro do pacote `com.devsuperior.dslist` e execute-a como uma aplicação Java em sua IDE (IntelliJ IDEA, Eclipse, etc.).
+        Localize a classe `DslistApplication.java` dentro do pacote `com.gamecatalog.dslist` e execute-a como uma aplicação Java em sua IDE (IntelliJ IDEA, Eclipse, etc.).
 
 4.  **Acessar a API:**
     Após a aplicação ser iniciada, você poderá acessar os endpoints da API através de ferramentas como o Postman, Insomnia ou um navegador web. Alguns endpoints de exemplo:
@@ -214,21 +229,34 @@ Os controladores expõem os endpoints da API, recebendo requisições HTTP e ret
     * `GET /lists/{listId}/games`: Lista os jogos da lista com o ID especificado em formato `GameMinDTO`.
     * `POST /lists/{listId}/replacement`: Permite mover um jogo de uma posição para outra dentro da lista especificada (requer um corpo JSON com `sourceIndex` e `destinationIndex`).
 
+## Fluxos de Dados dos Endpoints
+
+### 1. `GET /games`
+- **Fluxo**: `GameController` → `GameService` → `GameRepository` → `GameMinProjection` → `GameMinDTO` → `GameController` → Cliente.
+- **Descrição**: Retorna uma lista de todos os jogos em formato resumido.
+
+### 2. `GET /games/{id}`
+- **Fluxo**: `GameController` → `GameService` → `GameRepository` → `Game` → `GameDTO` → `GameController` → Cliente.
+- **Descrição**: Retorna detalhes completos de um jogo específico.
+
+### 3. `GET /lists`
+- **Fluxo**: `GameListController` → `GameListService` → `GameListRepository` → `GameList` → `GameListDTO` → `GameListController` → Cliente.
+- **Descrição**: Retorna todas as listas de jogos.
+
+### 4. `GET /lists/{listId}/games`
+- **Fluxo**: `GameListController` → `GameService` → `GameRepository` → `GameMinProjection` → `GameMinDTO` → `GameListController` → Cliente.
+- **Descrição**: Retorna jogos de uma lista específicaD, ordenados por posição.
+
+### 5. `POST /lists/{listId}/replacement`
+- **Fluxo**: `GameListController` → `GameListService` → `GameRepository` → Atualiza posições → `GameListService` → `GameListController` → Cliente.
+- **Descrição**: Reordena jogos em uma lista com base em `sourceIndex` e `destinationIndex`.
+
 ## Agradecimentos
 
 Gostaria de expressar minha profunda gratidão:
 
-* A **Nélio Alves** e toda a equipe da **DevSuperior** por criarem um treinamento tão completo e prático como o Intensivão Java Spring. A clareza das explicações e a abordagem focada em projetos são inestimáveis para o aprendizado.
+* A **Nélio Alves** e toda a equipe da **DevSuperior** por criarem um treinamento tão completo e prático como o **Intensivão Java Spring**. A clareza das explicações e a abordagem focada em projetos são inestimáveis para o aprendizado.
 
+**Nota**: Este projeto é um resultado direto do conhecimento adquirido no curso e reflete as melhores práticas para construção de APIs RESTful com Spring Boot durante o Intensivão Java Spring. Muito obrigado!
 
-Este projeto é um resultado direto do conhecimento e das ferramentas disponibilizadas durante o Intensivão Java Spring. Muito obrigado!
-
-
-
-
-
-
-
-
-
-clear; mvn clean install ; mvn spring-boot:run
+---

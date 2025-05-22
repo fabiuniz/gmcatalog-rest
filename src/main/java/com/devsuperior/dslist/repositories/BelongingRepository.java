@@ -1,7 +1,7 @@
-package com.devsuperior.dslist.repositories;
+package com.gamecatalog.dslist.repositories;
 
-import com.devsuperior.dslist.entities.Belonging;
-import com.devsuperior.dslist.entities.BelongingPK;
+import com.gamecatalog.dslist.entities.Belonging;
+import com.gamecatalog.dslist.entities.BelongingPK;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
