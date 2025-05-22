@@ -34,6 +34,11 @@ O `dslist` é uma aplicação backend desenvolvida com **Java** e o framework **
 - **PostgreSQL**: Banco de dados relacional para ambientes de produção.
 - **Lombok**: Biblioteca para reduzir código boilerplate.
 - **Maven**: Ferramenta de gerenciamento de dependências e build.
+- **HTML**: Linguagem de marcação para a estrutura da página.
+- **CSS**: (Tailwind CSS): Framework CSS para estilização rápida e responsiva.
+- **JavaScript**: Linguagem de programação para interatividade no frontend.
+- **React**: Biblioteca JavaScript para construção de interfaces de usuário.
+- **Babel**: Transpilador JavaScript para compatibilidade do React e JSX.
 
 ## 📚 Resumo da Estrutura do Projeto
 
