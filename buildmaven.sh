@@ -5,12 +5,10 @@
 
 #nano ~/.bashrc
 #export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+#export JAVA_HOME="/usr/lib/jvm/zulu21.42.19-ca-fx-jdk21.0.7-linux_x64"
 #export PATH=$PATH:$JAVA_HOME/bin
-
 #export MAVEN_HOME=/opt/maven
 #export PATH=$PATH:$MAVEN_HOME/bin
-
-
 #source ~/.bashrc
 
 #mvn --version
@@ -29,6 +27,7 @@
 clear; mvn clean install ; mvn spring-boot:run
 #docker-compose up -d
 #http://vmlinuxd:8080/h2-console
+#jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
 #http://vmlinuxd:8080/swagger-ui/index.html
 #http://vmlinuxd:8080
 #http://vmlinuxd:5050 pgamin

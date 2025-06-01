@@ -1,4 +1,6 @@
 package com.gamecatalog.dslist.controllers;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -29,5 +31,10 @@ public class GameController {
 	public List<GameMinDTO> findAll() {
 		List<GameMinDTO> result = gameService.findAll();
 		return result;
+	}
+	@PostMapping
+	public GameDTO create(@RequestBody GameDTO dto) {
+    	GameDTO result = gameService.save(dto);
+    	return result;
 	}
 }

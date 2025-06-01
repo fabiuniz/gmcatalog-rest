@@ -23,6 +23,8 @@
       const [selectedList, setSelectedList] = useState(null); // Lista de jogos selecionada
       const [listGames, setListGames] = useState([]); // Jogos da lista selecionada
       const [error, setError] = useState(null);
+      // NOVO ESTADO: Controla se o formulário de adicionar jogo está visível
+      const [showAddGameForm, setShowAddGameForm] = useState(false);
 
       // Backend API base URL (now relative since front-end and back-end are on the same origin)
       const API_BASE_URL = "";
@@ -71,10 +73,9 @@
 
       // Fetch game details when a game is clicked
       const handleGameClick = (gameId) => {
-        // Quando um jogo é clicado, sempre limpe a lista selecionada
-        // para garantir que a visão mude para os detalhes do jogo.
         setSelectedList(null);
-        setError(null); // Limpa erros anteriores
+        setShowAddGameForm(false); // Esconde o formulário ao ver detalhes do jogo
+        setError(null);
         fetch(`${API_BASE_URL}/games/${gameId}`)
           .then(res => {
             if (!res.ok) throw new Error("Failed to fetch game details");
@@ -90,15 +91,16 @@
       // Handle list selection
       const handleListClick = (list) => {
         setSelectedList(list);
-        setSelectedGame(null); // Limpa o jogo selecionado para mostrar a lista
-        setError(null); // Limpa erros anteriores
+        setSelectedGame(null);
+        setShowAddGameForm(false); // Esconde o formulário ao selecionar uma lista
+        setError(null);
       };
 
       // Handle game reordering in a list
       const handleMove = (sourceIndex, destinationIndex) => {
-        if (!selectedList) return; // Só move se uma lista estiver selecionada
+        if (!selectedList) return;
 
-        setError(null); // Limpa erros anteriores
+        setError(null);
         fetch(`${API_BASE_URL}/lists/${selectedList.id}/replacement`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -106,7 +108,6 @@
         })
           .then(res => {
             if (!res.ok) throw new Error("Failed to move game");
-            // Atualiza a lista de jogos após mover
             return fetch(`${API_BASE_URL}/lists/${selectedList.id}/games`);
           })
           .then(res => res.json())
@@ -117,10 +118,73 @@
           });
       };
 
-      // Função para voltar à tela de todos os jogos
-      const handleBackToAllGames = () => {
+      const [newGame, setNewGame] = useState({
+          title: "",
+          year: "",
+          genre: "",
+          platforms: "",
+          score: "",
+          imgUrl: "",
+          shortDescription: "",
+          longDescription: ""
+      });
+
+      const handleInputChange = (e) => {
+          const { name, value } = e.target;
+          setNewGame({ ...newGame, [name]: value });
+      };
+
+      const handleSubmit = (e) => {
+          e.preventDefault();
+          setError(null);
+          fetch(`${API_BASE_URL}/games`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                  ...newGame,
+                  year: parseInt(newGame.year),
+                  score: parseFloat(newGame.score)
+              })
+          })
+              .then(res => {
+                  if (!res.ok) throw new Error("Failed to create game");
+                  return res.json();
+              })
+              .then(data => {
+                  setGames([...games, data]);
+                  setNewGame({
+                      title: "",
+                      year: "",
+                      genre: "",
+                      platforms: "",
+                      score: "",
+                      imgUrl: "",
+                      shortDescription: "",
+                      longDescription: ""
+                  });
+                  // Após adicionar, volta para a lista de todos os jogos
+                  setSelectedGame(null);
+                  setSelectedList(null);
+                  setShowAddGameForm(false); // Esconde o formulário
+              })
+              .catch(err => {
+                  console.error("Error creating game:", err);
+                  setError("Unable to create game.");
+              });
+      };
+
+      // Função para mostrar o formulário de adicionar jogo
+      const handleShowAddGameForm = () => {
           setSelectedGame(null);
-          setSelectedList(null); // Garante que nenhuma lista esteja selecionada também
+          setSelectedList(null);
+          setShowAddGameForm(true); // Exibe o formulário
+      };
+
+      // Função para voltar à tela de todos os jogos
+      const handleShowAllGames = () => {
+          setSelectedGame(null);
+          setSelectedList(null);
+          setShowAddGameForm(false); // Esconde o formulário
       };
 
       return (
@@ -128,10 +192,17 @@
           {/* Sidebar for game lists */}
           <div className="w-1/4 bg-gray-800 text-white p-4">
             <h2 className="text-xl font-bold mb-4">Game Lists</h2>
+            {/* Opção para inserir jogos */}
+            <div
+              className={`p-2 mb-2 rounded cursor-pointer ${showAddGameForm ? "bg-gray-600" : "bg-gray-700"} hover:bg-gray-600`}
+              onClick={handleShowAddGameForm}
+            >
+              New Game
+            </div>
             {/* Opção para ver todos os jogos */}
             <div
-              className={`p-2 mb-2 rounded cursor-pointer ${!selectedList && !selectedGame ? "bg-gray-600" : "bg-gray-700"} hover:bg-gray-600`}
-              onClick={handleBackToAllGames}
+              className={`p-2 mb-2 rounded cursor-pointer ${!selectedList && !selectedGame && !showAddGameForm ? "bg-gray-600" : "bg-gray-700"} hover:bg-gray-600`}
+              onClick={handleShowAllGames}
             >
               All Games
             </div>
@@ -151,8 +222,93 @@
             <h1 className="text-3xl font-bold mb-6">Game Catalog</h1>
             {error && <div className="text-red-500 p-4">{error}</div>}
 
-            {/* Renderiza os detalhes do jogo se selectedGame não for null */}
-            {selectedGame ? (
+            {/* RENDERIZAÇÃO CONDICIONAL */}
+            {showAddGameForm ? ( // SE showAddGameForm é true, mostra o formulário
+              <div className="bg-white p-6 rounded shadow mb-6">
+                <h2 className="text-2xl font-semibold mb-4">Add New Game</h2>
+                <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+                    <input
+                        type="text"
+                        name="title"
+                        value={newGame.title}
+                        onChange={handleInputChange}
+                        placeholder="Title"
+                        className="p-2 border rounded"
+                        required
+                    />
+                    <input
+                        type="number"
+                        name="year"
+                        value={newGame.year}
+                        onChange={handleInputChange}
+                        placeholder="Year"
+                        className="p-2 border rounded"
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="genre"
+                        value={newGame.genre}
+                        placeholder="Genre"
+                        onChange={handleInputChange}
+                        className="p-2 border rounded"
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="platforms"
+                        value={newGame.platforms}
+                        onChange={handleInputChange}
+                        placeholder="Platforms"
+                        className="p-2 border rounded"
+                        required
+                    />
+                    <input
+                        type="number"
+                        name="score"
+                        value={newGame.score}
+                        onChange={handleInputChange}
+                        placeholder="Score"
+                        step="0.1"
+                        className="p-2 border rounded"
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="imgUrl"
+                        value={newGame.imgUrl}
+                        onChange={handleInputChange}
+                        placeholder="Image URL"
+                        className="p-2 border rounded"
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="shortDescription"
+                        value={newGame.shortDescription}
+                        onChange={handleInputChange}
+                        placeholder="Short Description"
+                        className="p-2 border rounded"
+                        required
+                    />
+                    <input
+                        type="text"
+                        name="longDescription"
+                        value={newGame.longDescription}
+                        onChange={handleInputChange}
+                        placeholder="Long Description"
+                        className="p-2 border rounded"
+                        required
+                    />
+                    <button
+                        type="submit"
+                        className="bg-green-500 text-white px-4 py-2 rounded col-span-2"
+                    >
+                        Add Game
+                    </button>
+                </form>
+              </div>
+            ) : selectedGame ? ( // SE selectedGame é true, mostra os detalhes do jogo
               <div className="bg-white p-6 rounded shadow">
                 <h2 className="text-2xl font-semibold mb-4">{selectedGame.title}</h2>
                 <img src={selectedGame.imgUrl} alt={selectedGame.title} className="w-48 h-48 object-cover mb-4" />
@@ -164,14 +320,13 @@
                 <p><strong>Long Description:</strong> {selectedGame.longDescription}</p>
                 <button
                   className="mt-4 bg-gray-500 text-white px-4 py-2 rounded"
-                  onClick={handleBackToAllGames}
+                  onClick={handleShowAllGames}
                 >
                   Back to All Games
                 </button>
               </div>
-            ) : selectedList ? (
-              // Corrected structure: no extra div wrapping <h2> and the grid div
-              <> {/* Use a JSX Fragment here to wrap adjacent elements */}
+            ) : selectedList ? ( // SE selectedList é true, mostra a lista de jogos
+              <>
                 <h2 className="text-2xl font-semibold mb-4">{selectedList.name}</h2>
                 <div className="grid grid-cols-1 gap-4">
                   {listGames.map((game, index) => (
@@ -204,7 +359,7 @@
                   ))}
                 </div>
               </>
-            ) : (
+            ) : ( // Caso contrário (nem selectedGame, nem selectedList, nem showAddGameForm), mostra a lista de todos os jogos
               <div className="grid grid-cols-2 gap-4">
                 {games.map(game => (
                   <div

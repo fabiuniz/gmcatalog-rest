@@ -1,4 +1,5 @@
 package com.gamecatalog.dslist.services;
+import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 
@@ -35,5 +36,12 @@ public class GameService {
 	public List<GameMinDTO> findByGameList(Long listId) {
 		List<GameMinProjection> games = gameRepository.searchByList(listId);
 		return games.stream().map(GameMinDTO::new).toList();
+	}
+	@Transactional
+	public GameDTO save(GameDTO dto) {
+    	Game entity = new Game();
+    	BeanUtils.copyProperties(dto, entity);
+    	entity = gameRepository.save(entity);
+    	return new GameDTO(entity);
 	}
 }
