@@ -44,4 +44,11 @@ public class GameService {
     	entity = gameRepository.save(entity);
     	return new GameDTO(entity);
 	}
+	@Transactional
+    public void delete(Long id) {
+        if (!gameRepository.existsById(id)) {
+            throw new IllegalArgumentException("Game not found: " + id);
+        }
+        gameRepository.deleteById(id);
+    }
 }

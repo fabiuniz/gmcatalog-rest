@@ -64,3 +64,4 @@ clear; mvn clean install ; mvn spring-boot:run
 #cd /usr/lib/jvm/
 #tar -xvzf /home/userlnx/docker/script_docker/relay/zulu21.42.19-ca-fx-jdk21.0.7-linux_x64.tar.gz
 #
+#<script type="text/babel" src="./App.jsx"></script>   

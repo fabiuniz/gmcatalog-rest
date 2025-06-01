@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.gamecatalog.dslist.dto.GameDTO;
 import com.gamecatalog.dslist.dto.GameMinDTO;
@@ -37,4 +39,9 @@ public class GameController {
     	GameDTO result = gameService.save(dto);
     	return result;
 	}
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        gameService.delete(id);
+        return ResponseEntity.noContent().build();
+    }	
 }

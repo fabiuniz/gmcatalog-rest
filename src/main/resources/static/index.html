@@ -186,6 +186,39 @@
           setSelectedList(null);
           setShowAddGameForm(false); // Esconde o formulário
       };
+      
+      // Função para apagar jogo
+      const handleDeleteGame = async () => {
+        if (!selectedGame || !selectedGame.id) {
+          setError("No game selected for deletion.");
+          return;
+        }
+
+        const confirmDelete = window.confirm(`Are you sure you want to delete "${selectedGame.title}"?`);
+        if (!confirmDelete) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/games/${selectedGame.id}`, {
+            method: "DELETE",
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to delete game");
+          }
+
+          // Atualiza o estado removendo o jogo deletado
+          setGames(games.filter(game => game.id !== selectedGame.id));
+          setSelectedGame(null); // Limpa o jogo selecionado
+          setError(null); // Limpa qualquer erro anterior
+          alert("Game deleted successfully!");
+        } catch (err) {
+          console.error("Error deleting game:", err);
+          setError("Unable to delete game. Please try again.");
+        }
+      };
+
 
       return (
         <div className="flex h-screen">
@@ -323,6 +356,12 @@
                   onClick={handleShowAllGames}
                 >
                   Back to All Games
+                </button>                
+                <button
+                  className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+                  onClick={handleDeleteGame}
+                >
+                  Delete
                 </button>
               </div>
             ) : selectedList ? ( // SE selectedList é true, mostra a lista de jogos
