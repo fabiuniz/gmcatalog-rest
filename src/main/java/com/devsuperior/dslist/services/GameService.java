@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
+import com.gamecatalog.dslist.repositories.BelongingRepository;
 
 import com.gamecatalog.dslist.dto.GameDTO;
 import com.gamecatalog.dslist.dto.GameMinDTO;
@@ -19,6 +20,9 @@ public class GameService {
 
 	@Autowired
 	private GameRepository gameRepository;
+
+	@Autowired
+    private BelongingRepository belongingRepository; 
 	
 	@Transactional(readOnly = true)
 	public GameDTO findById(@PathVariable Long listId) {
@@ -44,11 +48,11 @@ public class GameService {
     	entity = gameRepository.save(entity);
     	return new GameDTO(entity);
 	}
-	@Transactional
-    public void delete(Long id) {
-        if (!gameRepository.existsById(id)) {
-            throw new IllegalArgumentException("Game not found: " + id);
-        }
-        gameRepository.deleteById(id);
+    @Transactional // <--- ADD THIS TRANSACTIONAL ANNOTATION FOR THE DELETE METHOD
+    public void delete(Long gameId) {
+        // 1. Delete all associated belonging records first
+        belongingRepository.deleteBelongingsByGameId(gameId);
+        // 2. Now delete the game itself
+        gameRepository.deleteById(gameId);
     }
 }
