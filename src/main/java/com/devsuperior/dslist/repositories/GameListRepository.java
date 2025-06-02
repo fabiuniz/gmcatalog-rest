@@ -6,10 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.gamecatalog.dslist.entities.GameList;
 
+import java.util.Optional; // Importe Optional
+
 public interface GameListRepository extends JpaRepository<GameList, Long> {
 
-	@Modifying
-	@Query(nativeQuery = true, 
-		value = "UPDATE tb_belonging SET position = :newPosition WHERE list_id = :listId AND game_id = :gameId")
-	void updateBelongingPosition(Long listId, Long gameId, Integer newPosition);
+    // Método para buscar uma GameList pelo nome
+    // O Spring Data JPA infere a query a partir do nome do método
+    Optional<GameList> findByName(String name);
+
+    @Modifying
+    @Query(nativeQuery = true,
+        value = "UPDATE tb_belonging SET position = :newPosition WHERE list_id = :listId AND game_id = :gameId")
+    void updateBelongingPosition(Long listId, Long gameId, Integer newPosition);
 }

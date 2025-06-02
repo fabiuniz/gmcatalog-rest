@@ -15,7 +15,10 @@ public class GameDTO {
 	private String imgUrl;
 	private String shortDescription;
 	private String longDescription;
-	
+	private Long listId;
+	private String listName; 
+	private String name;
+
 	public GameDTO() {
 	}
 	
@@ -93,5 +96,26 @@ public class GameDTO {
 
 	public void setLongDescription(String longDescription) {
 		this.longDescription = longDescription;
+	}
+
+	public Long getListId() {
+		return listId;
+	}
+
+	public void setListId(Long listId) {
+		this.listId = listId;
+	}
+	public String getName() { 
+		return name; 
+	}
+	public void setName(String name) { 
+		this.name = name; 
+	}
+	public String getListName() {
+		return listName;
+	}
+
+	public void setListName(String listName) {
+		this.listName = listName;
 	}
 }
