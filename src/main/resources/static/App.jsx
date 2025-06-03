@@ -1,5 +1,4 @@
-  
-    const { useState, useEffect } = React;
+const { useState, useEffect } = React;
 
     // Component for the entire app
     function App() {
@@ -11,6 +10,10 @@
       const [error, setError] = useState(null);
       // NOVO ESTADO: Controla se o formulário de adicionar jogo está visível
       const [showAddGameForm, setShowAddGameForm] = useState(false);
+      // NOVO ESTADO: Controla se o formulário de edição de jogo está visível
+      const [showEditGameForm, setShowEditGameForm] = useState(false);
+      // NOVO ESTADO: Armazena os dados do jogo que está sendo editado
+      const [editingGame, setEditingGame] = useState(null);
 
       // Backend API base URL (now relative since front-end and back-end are on the same origin)
       const API_BASE_URL = "";
@@ -79,6 +82,8 @@
         setSelectedList(list);
         setSelectedGame(null);
         setShowAddGameForm(false); // Esconde o formulário ao selecionar uma lista
+        setShowEditGameForm(false); // Esconde o formulário de edição
+        setEditingGame(null); // Limpa o jogo em edição
         setError(null);
       };
 
@@ -117,7 +122,12 @@
 
       const handleInputChange = (e) => {
           const { name, value } = e.target;
-          setNewGame({ ...newGame, [name]: value });
+          // Se estiver editando, atualiza o estado de editingGame
+          if (showEditGameForm) {
+            setEditingGame({ ...editingGame, [name]: value });
+          } else { // Caso contrário, atualiza o estado de newGame (para adicionar)
+            setNewGame({ ...newGame, [name]: value });
+          }
       };
 
       const handleSubmit = (e) => {
@@ -163,15 +173,75 @@
       const handleShowAddGameForm = () => {
           setSelectedGame(null);
           setSelectedList(null);
-          setShowAddGameForm(true); // Exibe o formulário
+          setShowEditGameForm(false); // Esconde o formulário de edição
+          setEditingGame(null); // Limpa o jogo em edição
+          setShowAddGameForm(true); // Exibe o formulário de adicionar
       };
 
+  // Função para mostrar o formulário de edição de jogo
+      const handleShowEditGameForm = () => {
+        if (!selectedGame) {
+          setError("No game selected for editing.");
+          return;
+        }
+        // Preenche o estado editingGame com os dados do jogo selecionado
+        setEditingGame({ ...selectedGame });
+        setShowAddGameForm(false); // Esconde o formulário de adicionar
+        setShowEditGameForm(true); // Exibe o formulário de edição
+      };
+    
+      // Função para enviar os dados de edição do jogo
+      const handleUpdateGame = async (e) => {
+        e.preventDefault();
+        if (!editingGame || !editingGame.id) {
+          setError("No game selected for update.");
+          return;
+        }
+    
+        try {
+          const response = await fetch(`${API_BASE_URL}/games/${editingGame.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...editingGame,
+              year: parseInt(editingGame.year),
+              score: parseFloat(editingGame.score)
+            }),
+          });
+    
+          if (!response.ok) {
+            throw new Error("Failed to update game");
+          }
+    
+          const updatedGameData = await response.json();
+          
+          // Atualiza a lista de todos os jogos
+          setGames(games.map(game => 
+            game.id === updatedGameData.id ? updatedGameData : game
+          ));
+          
+          // Atualiza o jogo selecionado para mostrar os dados atualizados
+          setSelectedGame(updatedGameData);
+          
+          setShowEditGameForm(false); // Esconde o formulário de edição
+          setEditingGame(null); // Limpa o jogo em edição
+          setError(null); // Limpa qualquer erro anterior
+          alert("Game updated successfully!");
+    
+        } catch (err) {
+          console.error("Error updating game:", err);
+          setError("Unable to update game. Please try again.");
+        }
+      };
+    
       // Função para voltar à tela de todos os jogos
       const handleShowAllGames = () => {
           setSelectedGame(null);
           setSelectedList(null);
           setShowAddGameForm(false); // Esconde o formulário
-      };
+          setShowEditGameForm(false); // Esconde o formulário de edição
+          setEditingGame(null); // Limpa o jogo em edição
+        };
       
       // Função para apagar jogo
       const handleDeleteGame = async () => {
@@ -220,7 +290,7 @@
             </div>
             {/* Opção para ver todos os jogos */}
             <div
-              className={`p-2 mb-2 rounded cursor-pointer ${!selectedList && !selectedGame && !showAddGameForm ? "bg-gray-600" : "bg-gray-700"} hover:bg-gray-600`}
+              className={`p-2 mb-2 rounded cursor-pointer ${!selectedList && !selectedGame && !showAddGameForm && !showEditGameForm ? "bg-gray-600" : "bg-gray-700"} hover:bg-gray-600`}
               onClick={handleShowAllGames}
             >
               All Games
@@ -327,6 +397,100 @@
                     </button>
                 </form>
               </div>
+        ) : showEditGameForm ? ( // SE showEditGameForm é true, mostra o formulário de edição
+          <div className="bg-white p-6 rounded shadow mb-6">
+            <h2 className="text-2xl font-semibold mb-4">Edit Game: {editingGame?.title}</h2>
+            {editingGame && (
+              <form onSubmit={handleUpdateGame} className="grid grid-cols-2 gap-4">
+                <input
+                  type="text"
+                  name="title"
+                  value={editingGame.title || ''}
+                  onChange={handleInputChange}
+                  placeholder="Title"
+                  className="p-2 border rounded"
+                  required
+                />
+                <input
+                  type="number"
+                  name="year"
+                  value={editingGame.year || ''}
+                  onChange={handleInputChange}
+                  placeholder="Year"
+                  className="p-2 border rounded"
+                  required
+                />
+                <input
+                  type="text"
+                  name="genre"
+                  value={editingGame.genre || ''}
+                  placeholder="Genre"
+                  onChange={handleInputChange}
+                  className="p-2 border rounded"
+                  required
+                />
+                <input
+                  type="text"
+                  name="platforms"
+                  value={editingGame.platforms || ''}
+                  onChange={handleInputChange}
+                  placeholder="Platforms"
+                  className="p-2 border rounded"
+                  required
+                />
+                <input
+                  type="number"
+                  name="score"
+                  value={editingGame.score || ''}
+                  onChange={handleInputChange}
+                  placeholder="Score"
+                  step="0.1"
+                  className="p-2 border rounded"
+                  required
+                />
+                <input
+                  type="text"
+                  name="imgUrl"
+                  value={editingGame.imgUrl || ''}
+                  onChange={handleInputChange}
+                  placeholder="Image URL"
+                  className="p-2 border rounded"
+                  required
+                />
+                <input
+                  type="text"
+                  name="shortDescription"
+                  value={editingGame.shortDescription || ''}
+                  onChange={handleInputChange}
+                  placeholder="Short Description"
+                  className="p-2 border rounded"
+                  required
+                />
+                <input
+                  type="text"
+                  name="longDescription"
+                  value={editingGame.longDescription || ''}
+                  onChange={handleInputChange}
+                  placeholder="Long Description"
+                  className="p-2 border rounded"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded col-span-2"
+                >
+                  Update Game
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowEditGameForm(false)}
+                  className="bg-gray-500 text-white px-4 py-2 rounded col-span-2"
+                >
+                  Cancel
+                </button>
+              </form>
+            )}
+          </div>
             ) : selectedGame ? ( // SE selectedGame é true, mostra os detalhes do jogo
               <div className="bg-white p-6 rounded shadow">
                 <h2 className="text-2xl font-semibold mb-4">{selectedGame.title}</h2>
@@ -337,18 +501,26 @@
                 <p><strong>Score:</strong> {selectedGame.score}</p>
                 <p><strong>Short Description:</strong> {selectedGame.shortDescription}</p>
                 <p><strong>Long Description:</strong> {selectedGame.longDescription}</p>
+                <div className="mt-4 flex space-x-2">
                 <button
-                  className="mt-4 bg-gray-500 text-white px-4 py-2 rounded"
+                  className="bg-gray-500 text-white px-4 py-2 rounded"
                   onClick={handleShowAllGames}
                 >
                   Back to All Games
                 </button>                
                 <button
-                  className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-                  onClick={handleDeleteGame}
+                  className="bg-yellow-500 text-white px-4 py-2 rounded"
+                  onClick={handleShowEditGameForm}
                 >
-                  Delete
+                    Edit
                 </button>
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                    onClick={handleDeleteGame}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             ) : selectedList ? ( // SE selectedList é true, mostra a lista de jogos
               <>
@@ -384,7 +556,7 @@
                   ))}
                 </div>
               </>
-            ) : ( // Caso contrário (nem selectedGame, nem selectedList, nem showAddGameForm), mostra a lista de todos os jogos
+            ) : ( // Caso contrário (nem selectedGame, nem selectedList, nem showAddGameForm, nem showEditGameForm), mostra a lista de todos os jogos
               <div className="grid grid-cols-2 gap-4">
                 {games.map(game => (
                   <div
@@ -397,8 +569,8 @@
                     <p className="text-gray-600">{game.shortDescription}</p>
                   </div>
                 ))}
-              </div>
-            )}
+          </div>
+        )}
           </div>
         </div>
       );

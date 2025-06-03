@@ -11,6 +11,7 @@ import com.gamecatalog.dslist.repositories.BelongingRepository;
 
 import com.gamecatalog.dslist.dto.GameDTO;
 import com.gamecatalog.dslist.dto.GameMinDTO;
+import com.gamecatalog.dslist.dto.GameUpdateDTO;
 import com.gamecatalog.dslist.entities.Game;
 import com.gamecatalog.dslist.entities.GameList;
 import com.gamecatalog.dslist.entities.Belonging;
@@ -95,5 +96,17 @@ public class GameService {
         belongingRepository.deleteBelongingsByGameId(gameId);
         // 2. Now delete the game itself
         gameRepository.deleteById(gameId);
+    }
+    @Transactional
+    public GameDTO update(Long id, GameUpdateDTO dto) {
+        Game entity = gameRepository.findById(id).orElseThrow(() -> new RuntimeException("Game not found")); // Tratar caso não encontre
+        entity.setTitle(dto.getTitle());
+        entity.setYear(dto.getYear());
+        entity.setScore(dto.getScore());
+        entity.setImgUrl(dto.getImgUrl());
+        entity.setShortDescription(dto.getShortDescription());
+        entity.setLongDescription(dto.getLongDescription());
+        entity = gameRepository.save(entity);
+        return new GameDTO(entity);
     }
 }
