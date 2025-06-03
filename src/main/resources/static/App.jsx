@@ -1,5 +1,42 @@
 const { useState, useEffect } = React;
+    // Componente StarRatingDisplay
+    function StarRatingDisplay({ initialRating, onRatingChange, readOnly = false }) {
+        const [score, setRating] = useState(initialRating || 0);
+        const [hover, setHover] = useState(0);
 
+        useEffect(() => {
+            setRating(initialRating || 0);
+        }, [initialRating]);
+
+        const handleClick = (index) => {
+            if (readOnly) return;
+            setRating(index);
+            if (onRatingChange) {
+                onRatingChange(index);
+            }
+        };
+
+        return (
+            <div className="flex justify-center items-center">
+                {[...Array(5)].map((star, index) => {
+                    index += 1;
+                    return (
+                        <button
+                            key={index}
+                            className={`text-3xl ${index <= (hover || score) ? "text-yellow-400" : "text-gray-400"}`}
+                            onClick={() => handleClick(index)}
+                            onMouseEnter={() => !readOnly && setHover(index)}
+                            onMouseLeave={() => !readOnly && setHover(score)}
+                            disabled={readOnly}
+                            style={{ background: 'none', border: 'none', cursor: readOnly ? 'default' : 'pointer' }}
+                        >
+                            &#9733; {/* Unicode for a star character */}
+                        </button>
+                    );
+                })}
+            </div>
+        );
+    }
     // Component for the entire app
     function App() {
       const [games, setGames] = useState([]); // Todos os jogos
@@ -275,6 +312,33 @@ const { useState, useEffect } = React;
         }
       };
 
+      const handleRatingChange = async (gameId, newRating) => {
+          console.log(`Tentando enviar avaliação para o gameId: ${gameId} com rating: ${newRating}`); // ADICIONE ESTA LINHA
+          setError(null);
+          try {
+              const response = await fetch(`${API_BASE_URL}/games/${gameId}/rating`, {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({gameId: gameId, score: newRating }),
+              });
+              if (!response.ok) {
+                  throw new Error("Failed to update rating");
+              }
+              const updatedGame = await response.json();
+              // Atualiza o jogo na lista de todos os jogos
+              setGames(games.map(game =>
+                  game.id === updatedGame.id ? updatedGame : game
+              ));
+              // Se o jogo avaliado for o jogo selecionado, atualiza o selectedGame
+              if (selectedGame && selectedGame.id === updatedGame.id) {
+                  setSelectedGame(updatedGame);
+              }
+              alert("Rating updated successfully!");
+          } catch (err) {
+              console.error("Error updating rating:", err);
+              setError("Unable to update rating. Please try again.");
+          }
+      };
 
       return (
         <div className="flex h-screen">
@@ -501,6 +565,16 @@ const { useState, useEffect } = React;
                 <p><strong>Score:</strong> {selectedGame.score}</p>
                 <p><strong>Short Description:</strong> {selectedGame.shortDescription}</p>
                 <p><strong>Long Description:</strong> {selectedGame.longDescription}</p>
+                <div className="mt-4">
+                    <h3 className="text-xl font-semibold mb-2">Rate this Game:</h3>
+                    <StarRatingDisplay
+                        initialRating={selectedGame.score || 0}
+                        onRatingChange={(newRating) => handleRatingChange(selectedGame.id, newRating)}
+                    />
+                    {selectedGame.score !== null && selectedGame.score !== undefined && (
+                        <p className="text-center mt-2">Current Rating: {selectedGame.score.toFixed(1)} stars</p>
+                    )}
+                </div>
                 <div className="mt-4 flex space-x-2">
                 <button
                   className="bg-gray-500 text-white px-4 py-2 rounded"
@@ -567,6 +641,14 @@ const { useState, useEffect } = React;
                     <img src={game.imgUrl} alt={game.title} className="w-32 h-32 object-cover mb-2 mx-auto" />
                     <h3 className="text-lg font-semibold">{game.title} ({game.year})</h3>
                     <p className="text-gray-600">{game.shortDescription}</p>
+                    <div className="flex justify-center items-center mt-2">
+                        {/* Adicione este console.log */}
+                        {console.log(`Game: ${game.title}, Score:`, game.score)}
+                        <StarRatingDisplay initialRating={game.score || 0} readOnly={true} />
+                        {game.score !== null && game.score !== undefined && (
+                            <span className="ml-2 text-gray-700">({game.score.toFixed(1)})</span>
+                        )}
+                    </div>
                   </div>
                 ))}
           </div>

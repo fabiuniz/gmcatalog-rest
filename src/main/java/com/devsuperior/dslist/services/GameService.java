@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.gamecatalog.dslist.repositories.BelongingRepository;
 
+import com.gamecatalog.dslist.dto.GameRatingDTO;
 import com.gamecatalog.dslist.dto.GameDTO;
 import com.gamecatalog.dslist.dto.GameMinDTO;
 import com.gamecatalog.dslist.dto.GameUpdateDTO;
@@ -108,5 +109,21 @@ public class GameService {
         entity.setLongDescription(dto.getLongDescription());
         entity = gameRepository.save(entity);
         return new GameDTO(entity);
+    }
+    @Transactional // Ensures the database operation is atomic
+    public GameDTO updateGameRating(Long gameId, Double newRating) {
+        // 1. Find the Game entity by its ID
+        Game game = gameRepository.findById(gameId)
+                                  .orElseThrow(() -> new IllegalArgumentException("Game not found with ID: " + gameId));
+        // 2. Validate the incoming rating (e.g., ensure it's within a valid range like 0.0 to 5.0)
+        if (newRating == null || newRating < 0.0 || newRating > 5.0) {
+            throw new IllegalArgumentException("Invalid rating value. Rating must be between 0.0 and 5.0.");
+        }
+        // 3. Update the 'score' field of the Game entity with the new rating
+        game.setScore(newRating);
+        // 4. Save the updated Game entity back to the database
+        game = gameRepository.save(game); // save() can also update if the entity exists
+        // 5. Convert the updated Game entity to a GameDTO and return it
+        return new GameDTO(game);
     }
 }
