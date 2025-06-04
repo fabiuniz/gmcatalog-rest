@@ -343,7 +343,7 @@ const { useState, useEffect } = React;
       return (
         <div className="flex h-screen">
           {/* Sidebar for game lists */}
-          <div className="w-1/4 bg-gray-800 text-white p-4">
+          <div className="w-1/4 bg-gray-800 text-white p-4 fixed left-0 top-0 h-full overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">Game Lists</h2>
             {/* Opção para inserir jogos */}
             <div
@@ -371,7 +371,7 @@ const { useState, useEffect } = React;
           </div>
 
           {/* Main content area */}
-          <div className="w-3/4 p-6">
+          <div className="absolute left-1/4 w-3/4 p-6 h-full overflow-y-auto">
             <h1 className="text-3xl font-bold mb-6">Game Catalog</h1>
             {error && <div className="text-red-500 p-4">{error}</div>}
 
