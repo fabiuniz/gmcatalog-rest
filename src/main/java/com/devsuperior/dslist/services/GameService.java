@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.gamecatalog.dslist.repositories.BelongingRepository;
 
+import org.springframework.data.domain.Sort; // Importe esta classe
+import java.util.stream.Collectors; // Adicione esta linha
 import com.gamecatalog.dslist.dto.GameRatingDTO;
 import com.gamecatalog.dslist.dto.GameDTO;
 import com.gamecatalog.dslist.dto.GameMinDTO;
@@ -41,14 +43,20 @@ public class GameService {
 	
 	@Transactional(readOnly = true)
 	public List<GameMinDTO> findAll() {
-		List<Game> result = gameRepository.findAll();
-		return result.stream().map(GameMinDTO::new).toList();
+		// Altere esta linha para incluir a ordenação
+		// Ordena por 'score' em ordem decrescente (do maior score para o menor)
+		List<Game> result = gameRepository.findAll(Sort.by("score").descending());
+		// Se quiser em ordem crescente (do menor score para o maior), use:
+		// List<Game> result = gameRepository.findAll(Sort.by("score").ascending());
+		return result.stream().map(GameMinDTO::new).collect(Collectors.toList());
 	}
 	
 	@Transactional(readOnly = true)
 	public List<GameMinDTO> findByGameList(Long listId) {
-		List<GameMinProjection> games = gameRepository.searchByList(listId);
-		return games.stream().map(GameMinDTO::new).toList();
+		// Assumindo que GameMinProjection seja o tipo de retorno da sua query nativa
+		// que já tem o ORDER BY tb_belonging.position
+		List<GameMinProjection> result = gameRepository.searchByList(listId);
+		return result.stream().map(GameMinDTO::new).collect(Collectors.toList());
 	}
     @Transactional
     public GameDTO save(GameDTO dto) {
