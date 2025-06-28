@@ -17,7 +17,7 @@
 #mvn clean install
 
 #git branch -M main --> forçar usar main ao inves de master
-#git remote set-url origin https://github.com/fabiuniz/dslist-rest.git
+#git remote set-url origin https://github.com/fabiuniz/gmcatalog-rest.git
 #git branch --> atual
 #git push -f origin main
 #https://github.com/settings/tokens
@@ -38,8 +38,8 @@ clear; mvn clean install ; mvn spring-boot:run
 #	->maintenance database=mydatabase
 #	->user=postgres
 #	->senah=1234567
-#	database->createdabase=dslist
-#	dslist->schemas->public->tables-Querytool= Colar script
+#	database->createdabase=gmcatalog
+#	gmcatalog->schemas->public->tables-Querytool= Colar script
 #apt-get install ufw
 #ufw status
 #ufw enable
@@ -50,7 +50,7 @@ clear; mvn clean install ; mvn spring-boot:run
 #ufw status verbose
 #ufw reload
 #docker logs dev-pgadmin
-#chmod -R 777 dslist-rest/
+#chmod -R 777 gmcatalog-rest/
 #
 #nano ~/.bashrc
 #export JAVA_HOME="/usr/lib/jvm/zulu21.42.19-ca-fx-jdk21.0.7-linux_x64"

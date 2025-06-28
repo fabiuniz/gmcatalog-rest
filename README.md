@@ -1,3 +1,9 @@
+<!-- 
+  Tags: Dev, Monolíto
+  Label: 📦 PostgreSQL, JPA e API RESTful em Java Spring.
+  Description: Projeto DSList com PostgreSQL, JPA e API RESTful em Java Spring.
+  path_hook: hookfigma.hook11, hookfigma.hook14
+-->
 # ✨ Projeto Intensivão Java Spring - Maio/25
 
 Este projeto foi desenvolvido durante o Intensivão Java Spring, edição de maio de 2025, ministrado por **Nélio Alves** do **DevSuperior**.
@@ -12,9 +18,9 @@ Obrigado a todos!
 
 ## 🔭 Visão Geral
 
-![Logo](images/dslist.png)
+![Logo](images/gmcatalog.png)
 
-O `dslist` é uma aplicação backend desenvolvida com **Java** e o framework **Spring Boot**. Seu objetivo principal é gerenciar listas de jogos, permitindo a criação de listas personalizadas e a organização de jogos dentro dessas listas. A aplicação segue a arquitetura de uma **API RESTful**, possibilitando a interação com os dados por meio de requisições HTTP. Vamos entender como ele funciona:
+O `gmcatalog` é uma aplicação backend desenvolvida com **Java** e o framework **Spring Boot**. Seu objetivo principal é gerenciar listas de jogos, permitindo a criação de listas personalizadas e a organização de jogos dentro dessas listas. A aplicação segue a arquitetura de uma **API RESTful**, possibilitando a interação com os dados por meio de requisições HTTP. Vamos entender como ele funciona:
 
 ## 💡 Funcionalidades
 - **Listar todos os jogos**: Retorna uma lista de jogos com informações resumidas.
@@ -44,14 +50,14 @@ O `dslist` é uma aplicação backend desenvolvida com **Java** e o framework **
 
 O projeto segue as convenções do Spring Boot, com uma organização em pacotes para separação de responsabilidades:
 
-- `com.gamecatalog.dslist`: Pacote raiz da aplicação.
-- `com.gamecatalog.dslist.config`: Configurações, como CORS (`WebConfig`).
-- `com.gamecatalog.dslist.controllers`: Controladores REST (`GameController`, `GameListController`).
-- `com.gamecatalog.dslist.dto`: DTOs para transporte de dados (`GameDTO`, `GameListDTO`, `GameMinDTO`, `ReplacementDTO`).
-- `com.gamecatalog.dslist.entities`: Entidades do banco de dados (`Belonging`, `BelongingPK`, `Game`, `GameList`).
-- `com.gamecatalog.dslist.projections`: Projeções para consultas JPQL (`GameMinProjection`).
-- `com.gamecatalog.dslist.repositories`: Repositórios JPA (`GameListRepository`, `GameRepository`).
-- `com.gamecatalog.dslist.services`: Lógica de negócios (`GameListService`, `GameService`).
+- `com.gamecatalog.gmcatalog`: Pacote raiz da aplicação.
+- `com.gamecatalog.gmcatalog.config`: Configurações, como CORS (`WebConfig`).
+- `com.gamecatalog.gmcatalog.controllers`: Controladores REST (`GameController`, `GameListController`).
+- `com.gamecatalog.gmcatalog.dto`: DTOs para transporte de dados (`GameDTO`, `GameListDTO`, `GameMinDTO`, `ReplacementDTO`).
+- `com.gamecatalog.gmcatalog.entities`: Entidades do banco de dados (`Belonging`, `BelongingPK`, `Game`, `GameList`).
+- `com.gamecatalog.gmcatalog.projections`: Projeções para consultas JPQL (`GameMinProjection`).
+- `com.gamecatalog.gmcatalog.repositories`: Repositórios JPA (`GameListRepository`, `GameRepository`).
+- `com.gamecatalog.gmcatalog.services`: Lógica de negócios (`GameListService`, `GameService`).
 
 ---
 
@@ -68,9 +74,9 @@ O projeto é desenvolvido em Java e utiliza o framework Spring Boot, que facilit
     * **`spring-boot-starter-test`**: Oferece utilitários para testar aplicações Spring Boot.
     * **`java.version`**: Definido como `21`, indicando a versão do JDK (Java Development Kit) utilizada.
 * **Maven Wrapper (`mvnw`, `mvnw.cmd`):** Scripts que permitem compilar o projeto sem ter o Maven instalado globalmente em sua máquina. Eles baixam uma versão específica do Maven se necessário.
-* **`DslistApplication.java`**: É o ponto de entrada principal da aplicação Spring Boot. A anotação `@SpringBootApplication` combina `@Configuration`, `@EnableAutoConfiguration` e `@ComponentScan`, tornando-o uma aplicação Spring Boot típica.
+* **`GmcatalogApplication.java`**: É o ponto de entrada principal da aplicação Spring Boot. A anotação `@SpringBootApplication` combina `@Configuration`, `@EnableAutoConfiguration` e `@ComponentScan`, tornando-o uma aplicação Spring Boot típica.
 * **`Game` (Entidade):**
-    * Localizada em `com.gamecatalog.dslist.entities`.
+    * Localizada em `com.gamecatalog.gmcatalog.entities`.
     * Representa um jogo no banco de dados.
     * Anotada com `@Entity` e `@Table(name = "tb_game")` para mapeá-la à tabela `tb_game`.
     * Usa `@Id` e `@GeneratedValue(strategy = GenerationType.IDENTITY)` para geração automática de ID.
@@ -78,19 +84,19 @@ O projeto é desenvolvido em Java e utiliza o framework Spring Boot, que facilit
     * `@Column(name = "game_year")` mapeia explicitamente o campo `year` para uma coluna chamada `game_year`.
     * `@Column(columnDefinition = "TEXT")` é usado para `shortDescription` e `longDescription` para permitir entradas de texto mais longas no banco de dados.
 * **`GameMinDTO` (Objeto de Transferência de Dados - DTO):**
-    * Localizada em `com.gamecatalog.dslist.dto`.
+    * Localizada em `com.gamecatalog.gmcatalog.dto`.
     * Uma representação simplificada de uma entidade `Game`, contendo apenas `id`, `title`, `year`, `imgUrl` e `shortDescription`.
     * DTOs são usados para transferir dados entre camadas (por exemplo, da camada de serviço para o controlador) e para expor apenas as informações necessárias ao cliente, melhorando a segurança e o desempenho.
 * **`GameRepository` (Repositório):**
-    * Localizada em `com.gamecatalog.dslist.repositories`.
+    * Localizada em `com.gamecatalog.gmcatalog.repositories`.
     * Uma interface que estende `JpaRepository`, fornecendo operações CRUD (Criar, Ler, Atualizar, Excluir) padrão para a entidade `Game` sem a necessidade de escrever código repetitivo.
 * **`GameService` (Serviço):**
-    * Localizada em `com.gamecatalog.dslist.services`.
+    * Localizada em `com.gamecatalog.gmcatalog.services`.
     * Anotada com `@Service`, indicando que é um componente de lógica de negócios.
     * Usa `@Autowired` para injetar `GameRepository`.
     * Contém o método `findAll()`, que recupera todas as entidades `Game` do banco de dados, as converte em objetos `GameMinDTO` e retorna uma lista desses DTOs. Essa transformação garante que apenas os dados mínimos necessários sejam expostos.
 * **`GameController` (Controlador):**
-    * Localizada em `com.gamecatalog.dslist.controllers`.
+    * Localizada em `com.gamecatalog.gmcatalog.controllers`.
     * Anotada com `@RestController` e `@RequestMapping(value = "/games")`, indicando que é um controlador REST que lida com requisições para o endpoint `/games`.
     * Usa `@Autowired` para injetar `GameService`.
     * A anotação `@GetMapping` no método `findAll()` mapeia as requisições HTTP GET para `/games` a este método, que então chama o `GameService` para buscar os dados do jogo e retorná-los ao cliente.
@@ -139,7 +145,7 @@ Esses arquivos controlam o comportamento da sua aplicação Spring Boot, especia
 * **Ativação de Perfil (Comentada):** `#spring.profiles.active=${APP_PROFILE:dev} ou ${APP_PROFILE:prod}` sugere a ativação dinâmica de perfis.
 * **Geração de Esquema para `create.sql` (Comentada):** Linhas comentadas para **gerar scripts SQL de criação de esquema** a partir de entidades JPA.
 * **Conexão PostgreSQL (Direta):**
-    * `spring.datasource.url=jdbc:postgresql://vmlinuxd:5433/dslist`: URL direta para uma instância local de PostgreSQL.
+    * `spring.datasource.url=jdbc:postgresql://vmlinuxd:5433/gmcatalog`: URL direta para uma instância local de PostgreSQL.
     * `spring.datasource.username=postgres`: Nome de usuário direto.
     * `spring.datasource.password=1234567`: Senha direta (evitar em produção).
 * **Dialeto Hibernate:** `spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect` mantém o dialeto correto.
@@ -152,7 +158,7 @@ Esses arquivos controlam o comportamento da sua aplicação Spring Boot, especia
 
 Aqui está um passo a passo de como o projeto funciona:
 
-*  **Inicialização da Aplicação:** Quando a aplicação `DslistApplication` é executada, o Spring Boot inicializa o contexto da aplicação. Ele procura por componentes como controladores, serviços e repositórios.
+*  **Inicialização da Aplicação:** Quando a aplicação `GmcatalogApplication` é executada, o Spring Boot inicializa o contexto da aplicação. Ele procura por componentes como controladores, serviços e repositórios.
 *  **Inicialização do Banco de Dados (para o perfil `test`):**
     * Como `spring.profiles.active=test` e o H2 está configurado, o Spring Boot configura um banco de dados H2 em memória.
     * O script `import.sql` é executado, preenchendo a tabela `tb_game` com dados iniciais de jogos.
@@ -242,8 +248,8 @@ Isso associa o nome vmlinuxd ao endereço 127.0.0.1 no seu computador, permitind
 
 2.  **⬇️ Clonar o Repositório (se aplicável):**
     ```bash
-    git clone https://github.com/fabiuniz/dslist-rest.git
-    cd dslist
+    git clone https://github.com/fabiuniz/gmcatalog-rest.git
+    cd gmcatalog
     ```
 
 3.  **▶️ Executar a Aplicação:**
@@ -255,7 +261,7 @@ Isso associa o nome vmlinuxd ao endereço 127.0.0.1 no seu computador, permitind
         ```
 
     * **Executando a classe principal:**
-        Localize a classe `DslistApplication.java` dentro do pacote `com.gamecatalog.dslist` e execute-a como uma aplicação Java em sua IDE (IntelliJ IDEA, Eclipse, etc.).
+        Localize a classe `GmcatalogApplication.java` dentro do pacote `com.gamecatalog.gmcatalog` e execute-a como uma aplicação Java em sua IDE (IntelliJ IDEA, Eclipse, etc.).
 
 4.  **📡 Acessar a API:**
     Após a aplicação ser iniciada, você poderá acessar os endpoints da API através de ferramentas como o Postman, Insomnia ou um navegador web. Alguns endpoints de exemplo:
@@ -298,15 +304,15 @@ Isso associa o nome vmlinuxd ao endereço 127.0.0.1 no seu computador, permitind
 ## 📊 Homologação Local:
 - Após iniciar a aplicação localmente e acessar a API, a etapa de homologação envolve a validação das funcionalidades. Você pode utilizar ferramentas de teste de API como Postman, Insomnia ou comandos curl diretamente do terminal para enviar requisições HTTP aos endpoints (/games, /lists, etc.) e verificar se as respostas estão corretas, os dados estão sendo manipulados adequadamente, e se a aplicação se comporta conforme o esperado em diversos cenários de uso.
 
-## ⚡ CI/CD para o dslist: Automação da Entrega e Qualidade
-- CI/CD (Integração Contínua e Entrega Contínua) é essencial para o dslist, automatizando a construção, testes e implantação do código. Ele atua como uma esteira de produção que garante entregas rápidas e confiáveis.
+## ⚡ CI/CD para o gmcatalog: Automação da Entrega e Qualidade
+- CI/CD (Integração Contínua e Entrega Contínua) é essencial para o gmcatalog, automatizando a construção, testes e implantação do código. Ele atua como uma esteira de produção que garante entregas rápidas e confiáveis.
 
 - Benefícios e Fluxo Simplificado
 A cada push de código para o GitHub, um fluxo de CI/CD via GitHub Actions é acionado:
 
-- Integração Contínua (CI): O código é automaticamente compilado e todos os testes são executados. Isso fornece feedback instantâneo sobre a qualidade e integridade do dslist, identificando erros rapidamente.
+- Integração Contínua (CI): O código é automaticamente compilado e todos os testes são executados. Isso fornece feedback instantâneo sobre a qualidade e integridade do gmcatalog, identificando erros rapidamente.
 - Entrega Contínua (CD): Se a etapa de CI for bem-sucedida, a aplicação é automaticamente empacotada (.jar) e implantada em um ambiente de produção (como o Railway, por exemplo). Isso permite que novas funcionalidades e correções cheguem aos usuários de forma ágil e com alta confiabilidade, liberando a equipe para focar no desenvolvimento.
-Esse processo otimiza o tempo da equipe e assegura a manutenção contínua da qualidade do dslist.
+Esse processo otimiza o tempo da equipe e assegura a manutenção contínua da qualidade do gmcatalog.
 
 ## 🙏 Agradecimentos
 
@@ -317,3 +323,11 @@ Gostaria de expressar minha profunda gratidão:
 **Nota**: Este projeto é um resultado direto do conhecimento adquirido no curso e reflete as melhores práticas para construção de APIs RESTful com Spring Boot durante o Intensivão Java Spring. Muito obrigado!
 
 ---
+
+## 👨‍💻 Autor
+
+[Fabiano Rocha/Fabiuniz]
+
+## Licença
+
+Este projeto está licenciado sob a [MIT License](LICENSE).
