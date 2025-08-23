@@ -1,7 +1,7 @@
 <!-- 
   Tags: Dev, Monolíto
   Label: 📦 PostgreSQL, JPA e API RESTful em Java Spring.
-  Description: Projeto DSList com PostgreSQL, JPA e API RESTful em Java Spring.
+  Description: Projeto GmList com PostgreSQL, JPA e API RESTful em Java Spring.
   path_hook: hookfigma.hook11, hookfigma.hook14
 -->
 # ✨ Projeto Intensivão Java Spring - Maio/25
@@ -323,6 +323,12 @@ Gostaria de expressar minha profunda gratidão:
 **Nota**: Este projeto é um resultado direto do conhecimento adquirido no curso e reflete as melhores práticas para construção de APIs RESTful com Spring Boot durante o Intensivão Java Spring. Muito obrigado!
 
 ---
+
+dev-pgadmin 
+
+mkdir .data
+
+docker compose stop pgadmin-docker
 
 ## 👨‍💻 Autor
 
