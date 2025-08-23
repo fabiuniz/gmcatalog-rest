@@ -1,4 +1,4 @@
-package com.gamecatalog.gmcatalog.entities;
+package com.fabiuniz.gmcatalog.entities;
 
 import java.util.Objects;
 

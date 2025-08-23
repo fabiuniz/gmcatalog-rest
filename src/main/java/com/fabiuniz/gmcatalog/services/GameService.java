@@ -1,4 +1,4 @@
-package com.gamecatalog.gmcatalog.services;
+package com.fabiuniz.gmcatalog.services;
 import org.springframework.beans.BeanUtils;
 
 import java.util.List;
@@ -7,20 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
-import com.gamecatalog.gmcatalog.repositories.BelongingRepository;
+import com.fabiuniz.gmcatalog.repositories.BelongingRepository;
 
 import org.springframework.data.domain.Sort; // Importe esta classe
 import java.util.stream.Collectors; // Adicione esta linha
-import com.gamecatalog.gmcatalog.dto.GameRatingDTO;
-import com.gamecatalog.gmcatalog.dto.GameDTO;
-import com.gamecatalog.gmcatalog.dto.GameMinDTO;
-import com.gamecatalog.gmcatalog.dto.GameUpdateDTO;
-import com.gamecatalog.gmcatalog.entities.Game;
-import com.gamecatalog.gmcatalog.entities.GameList;
-import com.gamecatalog.gmcatalog.entities.Belonging;
-import com.gamecatalog.gmcatalog.projections.GameMinProjection;
-import com.gamecatalog.gmcatalog.repositories.GameRepository;
-import com.gamecatalog.gmcatalog.repositories.GameListRepository;
+import com.fabiuniz.gmcatalog.dto.GameRatingDTO;
+import com.fabiuniz.gmcatalog.dto.GameDTO;
+import com.fabiuniz.gmcatalog.dto.GameMinDTO;
+import com.fabiuniz.gmcatalog.dto.GameUpdateDTO;
+import com.fabiuniz.gmcatalog.entities.Game;
+import com.fabiuniz.gmcatalog.entities.GameList;
+import com.fabiuniz.gmcatalog.entities.Belonging;
+import com.fabiuniz.gmcatalog.projections.GameMinProjection;
+import com.fabiuniz.gmcatalog.repositories.GameRepository;
+import com.fabiuniz.gmcatalog.repositories.GameListRepository;
 import java.util.Optional;
 
 @Service

@@ -1,4 +1,4 @@
-package com.gamecatalog.gmcatalog;
+package com.fabiuniz.gmcatalog;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

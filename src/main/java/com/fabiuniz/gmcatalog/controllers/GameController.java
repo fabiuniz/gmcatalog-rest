@@ -1,4 +1,4 @@
-package com.gamecatalog.gmcatalog.controllers;
+package com.fabiuniz.gmcatalog.controllers;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import com.gamecatalog.gmcatalog.entities.Game;
-import com.gamecatalog.gmcatalog.dto.GameRatingDTO;
-import com.gamecatalog.gmcatalog.dto.GameDTO;
-import com.gamecatalog.gmcatalog.dto.GameMinDTO;
-import com.gamecatalog.gmcatalog.services.GameService;
+import com.fabiuniz.gmcatalog.entities.Game;
+import com.fabiuniz.gmcatalog.dto.GameRatingDTO;
+import com.fabiuniz.gmcatalog.dto.GameDTO;
+import com.fabiuniz.gmcatalog.dto.GameMinDTO;
+import com.fabiuniz.gmcatalog.services.GameService;
 
-import com.gamecatalog.gmcatalog.dto.GameUpdateDTO; 
+import com.fabiuniz.gmcatalog.dto.GameUpdateDTO; 
 @RestController
 @RequestMapping(value = "/games")
 public class GameController {

@@ -1,7 +1,7 @@
-package com.gamecatalog.gmcatalog.repositories;
+package com.fabiuniz.gmcatalog.repositories;
 
-import com.gamecatalog.gmcatalog.entities.Belonging;
-import com.gamecatalog.gmcatalog.entities.BelongingPK;
+import com.fabiuniz.gmcatalog.entities.Belonging;
+import com.fabiuniz.gmcatalog.entities.BelongingPK;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

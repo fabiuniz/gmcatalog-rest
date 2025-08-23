@@ -1,7 +1,7 @@
-package com.gamecatalog.gmcatalog.dto;
+package com.fabiuniz.gmcatalog.dto;
 
-import com.gamecatalog.gmcatalog.entities.Game;
-import com.gamecatalog.gmcatalog.projections.GameMinProjection;
+import com.fabiuniz.gmcatalog.entities.Game;
+import com.fabiuniz.gmcatalog.projections.GameMinProjection;
 
 public class GameMinDTO {
 

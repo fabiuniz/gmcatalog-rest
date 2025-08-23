@@ -1,6 +1,6 @@
-package com.gamecatalog.gmcatalog.dto;
+package com.fabiuniz.gmcatalog.dto;
 
-import com.gamecatalog.gmcatalog.entities.GameList;
+import com.fabiuniz.gmcatalog.entities.GameList;
 
 public class GameListDTO {
 

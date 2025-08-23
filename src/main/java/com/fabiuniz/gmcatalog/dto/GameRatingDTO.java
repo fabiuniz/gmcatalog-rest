@@ -1,4 +1,4 @@
-package com.gamecatalog.gmcatalog.dto;
+package com.fabiuniz.gmcatalog.dto;
 
 import jakarta.validation.constraints.NotNull;
 

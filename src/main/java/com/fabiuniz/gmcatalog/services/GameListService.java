@@ -1,4 +1,4 @@
-package com.gamecatalog.gmcatalog.services;
+package com.fabiuniz.gmcatalog.services;
 
 import java.util.List;
 
@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gamecatalog.gmcatalog.dto.GameListDTO;
-import com.gamecatalog.gmcatalog.entities.GameList;
-import com.gamecatalog.gmcatalog.projections.GameMinProjection;
-import com.gamecatalog.gmcatalog.repositories.GameListRepository;
-import com.gamecatalog.gmcatalog.repositories.GameRepository;
+import com.fabiuniz.gmcatalog.dto.GameListDTO;
+import com.fabiuniz.gmcatalog.entities.GameList;
+import com.fabiuniz.gmcatalog.projections.GameMinProjection;
+import com.fabiuniz.gmcatalog.repositories.GameListRepository;
+import com.fabiuniz.gmcatalog.repositories.GameRepository;
 
 @Service
 public class GameListService {

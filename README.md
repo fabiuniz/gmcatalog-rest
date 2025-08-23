@@ -50,14 +50,14 @@ O `gmcatalog` é uma aplicação backend desenvolvida com **Java** e o framework
 
 O projeto segue as convenções do Spring Boot, com uma organização em pacotes para separação de responsabilidades:
 
-- `com.gamecatalog.gmcatalog`: Pacote raiz da aplicação.
-- `com.gamecatalog.gmcatalog.config`: Configurações, como CORS (`WebConfig`).
-- `com.gamecatalog.gmcatalog.controllers`: Controladores REST (`GameController`, `GameListController`).
-- `com.gamecatalog.gmcatalog.dto`: DTOs para transporte de dados (`GameDTO`, `GameListDTO`, `GameMinDTO`, `ReplacementDTO`).
-- `com.gamecatalog.gmcatalog.entities`: Entidades do banco de dados (`Belonging`, `BelongingPK`, `Game`, `GameList`).
-- `com.gamecatalog.gmcatalog.projections`: Projeções para consultas JPQL (`GameMinProjection`).
-- `com.gamecatalog.gmcatalog.repositories`: Repositórios JPA (`GameListRepository`, `GameRepository`).
-- `com.gamecatalog.gmcatalog.services`: Lógica de negócios (`GameListService`, `GameService`).
+- `com.fabiuniz.gmcatalog`: Pacote raiz da aplicação.
+- `com.fabiuniz.gmcatalog.config`: Configurações, como CORS (`WebConfig`).
+- `com.fabiuniz.gmcatalog.controllers`: Controladores REST (`GameController`, `GameListController`).
+- `com.fabiuniz.gmcatalog.dto`: DTOs para transporte de dados (`GameDTO`, `GameListDTO`, `GameMinDTO`, `ReplacementDTO`).
+- `com.fabiuniz.gmcatalog.entities`: Entidades do banco de dados (`Belonging`, `BelongingPK`, `Game`, `GameList`).
+- `com.fabiuniz.gmcatalog.projections`: Projeções para consultas JPQL (`GameMinProjection`).
+- `com.fabiuniz.gmcatalog.repositories`: Repositórios JPA (`GameListRepository`, `GameRepository`).
+- `com.fabiuniz.gmcatalog.services`: Lógica de negócios (`GameListService`, `GameService`).
 
 ---
 
@@ -76,7 +76,7 @@ O projeto é desenvolvido em Java e utiliza o framework Spring Boot, que facilit
 * **Maven Wrapper (`mvnw`, `mvnw.cmd`):** Scripts que permitem compilar o projeto sem ter o Maven instalado globalmente em sua máquina. Eles baixam uma versão específica do Maven se necessário.
 * **`GmcatalogApplication.java`**: É o ponto de entrada principal da aplicação Spring Boot. A anotação `@SpringBootApplication` combina `@Configuration`, `@EnableAutoConfiguration` e `@ComponentScan`, tornando-o uma aplicação Spring Boot típica.
 * **`Game` (Entidade):**
-    * Localizada em `com.gamecatalog.gmcatalog.entities`.
+    * Localizada em `com.fabiuniz.gmcatalog.entities`.
     * Representa um jogo no banco de dados.
     * Anotada com `@Entity` e `@Table(name = "tb_game")` para mapeá-la à tabela `tb_game`.
     * Usa `@Id` e `@GeneratedValue(strategy = GenerationType.IDENTITY)` para geração automática de ID.
@@ -84,19 +84,19 @@ O projeto é desenvolvido em Java e utiliza o framework Spring Boot, que facilit
     * `@Column(name = "game_year")` mapeia explicitamente o campo `year` para uma coluna chamada `game_year`.
     * `@Column(columnDefinition = "TEXT")` é usado para `shortDescription` e `longDescription` para permitir entradas de texto mais longas no banco de dados.
 * **`GameMinDTO` (Objeto de Transferência de Dados - DTO):**
-    * Localizada em `com.gamecatalog.gmcatalog.dto`.
+    * Localizada em `com.fabiuniz.gmcatalog.dto`.
     * Uma representação simplificada de uma entidade `Game`, contendo apenas `id`, `title`, `year`, `imgUrl` e `shortDescription`.
     * DTOs são usados para transferir dados entre camadas (por exemplo, da camada de serviço para o controlador) e para expor apenas as informações necessárias ao cliente, melhorando a segurança e o desempenho.
 * **`GameRepository` (Repositório):**
-    * Localizada em `com.gamecatalog.gmcatalog.repositories`.
+    * Localizada em `com.fabiuniz.gmcatalog.repositories`.
     * Uma interface que estende `JpaRepository`, fornecendo operações CRUD (Criar, Ler, Atualizar, Excluir) padrão para a entidade `Game` sem a necessidade de escrever código repetitivo.
 * **`GameService` (Serviço):**
-    * Localizada em `com.gamecatalog.gmcatalog.services`.
+    * Localizada em `com.fabiuniz.gmcatalog.services`.
     * Anotada com `@Service`, indicando que é um componente de lógica de negócios.
     * Usa `@Autowired` para injetar `GameRepository`.
     * Contém o método `findAll()`, que recupera todas as entidades `Game` do banco de dados, as converte em objetos `GameMinDTO` e retorna uma lista desses DTOs. Essa transformação garante que apenas os dados mínimos necessários sejam expostos.
 * **`GameController` (Controlador):**
-    * Localizada em `com.gamecatalog.gmcatalog.controllers`.
+    * Localizada em `com.fabiuniz.gmcatalog.controllers`.
     * Anotada com `@RestController` e `@RequestMapping(value = "/games")`, indicando que é um controlador REST que lida com requisições para o endpoint `/games`.
     * Usa `@Autowired` para injetar `GameService`.
     * A anotação `@GetMapping` no método `findAll()` mapeia as requisições HTTP GET para `/games` a este método, que então chama o `GameService` para buscar os dados do jogo e retorná-los ao cliente.
@@ -261,7 +261,7 @@ Isso associa o nome vmlinuxd ao endereço 127.0.0.1 no seu computador, permitind
         ```
 
     * **Executando a classe principal:**
-        Localize a classe `GmcatalogApplication.java` dentro do pacote `com.gamecatalog.gmcatalog` e execute-a como uma aplicação Java em sua IDE (IntelliJ IDEA, Eclipse, etc.).
+        Localize a classe `GmcatalogApplication.java` dentro do pacote `com.fabiuniz.gmcatalog` e execute-a como uma aplicação Java em sua IDE (IntelliJ IDEA, Eclipse, etc.).
 
 4.  **📡 Acessar a API:**
     Após a aplicação ser iniciada, você poderá acessar os endpoints da API através de ferramentas como o Postman, Insomnia ou um navegador web. Alguns endpoints de exemplo:

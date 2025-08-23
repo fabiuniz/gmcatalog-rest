@@ -1,4 +1,4 @@
-package com.gamecatalog.gmcatalog.projections;
+package com.fabiuniz.gmcatalog.projections;
 
 public interface GameMinProjection {
 

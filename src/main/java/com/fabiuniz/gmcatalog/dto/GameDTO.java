@@ -1,8 +1,8 @@
-package com.gamecatalog.gmcatalog.dto;
+package com.fabiuniz.gmcatalog.dto;
 
 import org.springframework.beans.BeanUtils;
 
-import com.gamecatalog.gmcatalog.entities.Game;
+import com.fabiuniz.gmcatalog.entities.Game;
 
 public class GameDTO {
 

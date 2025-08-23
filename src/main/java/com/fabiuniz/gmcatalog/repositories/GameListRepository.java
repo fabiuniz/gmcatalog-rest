@@ -1,10 +1,10 @@
-package com.gamecatalog.gmcatalog.repositories;
+package com.fabiuniz.gmcatalog.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import com.gamecatalog.gmcatalog.entities.GameList;
+import com.fabiuniz.gmcatalog.entities.GameList;
 
 import java.util.Optional; // Importe Optional
 

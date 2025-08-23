@@ -1,4 +1,4 @@
-package com.gamecatalog.gmcatalog;
+package com.fabiuniz.gmcatalog;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

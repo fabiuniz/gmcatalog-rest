@@ -1,4 +1,4 @@
-package com.gamecatalog.gmcatalog.config;
+package com.fabiuniz.gmcatalog.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
