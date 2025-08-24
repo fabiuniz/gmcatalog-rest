@@ -1,6 +1,28 @@
 version: "3"
 services:
   # ====================================================================================================================
+  # Aplicação Spring Boot
+  # ====================================================================================================================
+  app:
+    build: .
+    container_name: gmcatalog-app
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_PROFILE=dev
+      # Configurações específicas para conectar ao PostgreSQL do container
+      - DB_URL=jdbc:postgresql://pg-docker:5432/mydatabase
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=1234567
+      - CORS_ORIGINS=http://localhost:3000,http://localhost:5173
+    depends_on:
+      - pg-docker
+    networks:
+      - dev-network
+    # Aguarda o banco estar pronto antes de iniciar a aplicação
+    restart: on-failure
+    
+  # ====================================================================================================================
   # POSTGRES SERVER
   # ====================================================================================================================
   pg-docker:
@@ -13,6 +35,7 @@ services:
       - 5433:5432
     volumes:
       - ./.data/postgresql/data:/var/lib/postgresql/data
+      - ./create.sql:/docker-entrypoint-initdb.d/create.sql
     networks:
       - dev-network
   # ====================================================================================================================

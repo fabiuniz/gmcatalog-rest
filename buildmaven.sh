@@ -1,4 +1,4 @@
-#apt install openjdk-17-jdk
+	#apt install openjdk-17-jdk
 #java -version
 
 
@@ -25,6 +25,11 @@
 #mvn spring-boot:run
 
 clear; mvn clean install ; mvn spring-boot:run
+#clear; mvn clean install ; mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8080"
+#
+#mvn wrapper:wrapper
+#docker-compose up --build app
+#
 #docker-compose up -d
 #http://vmlinuxd:8080/h2-console
 #jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
