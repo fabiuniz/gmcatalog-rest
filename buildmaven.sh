@@ -40,7 +40,7 @@ clear; mvn clean install ; mvn spring-boot:run
 #Servers->registrar->servidor->general->name=Postgress-local-docker
 #Servers->registrar->servidor->Connection->hostname/adress=pg-docker
 #	->prot=5433
-#	->maintenance database=gmcatalog
+#	->maintenbaance database=gmcatalog
 #	->user=postgres
 #	->senah=1234567
 #	database->createdabase=gmcatalog

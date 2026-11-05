@@ -1,8 +1,9 @@
 <!-- 
-  Tags: Dev, Monolíto
+  Tags: Dev, Monolíto, Fund , Dev
   Label: 📦 PostgreSQL, JPA e API RESTful em Java Spring.
-  Description: Projeto GmList com PostgreSQL, JPA e API RESTful em Java Spring.
-  path_hook: hookfigma.hook11, hookfigma.hook14
+  Description:🌍 Projeto GmList com PostgreSQL, JPA e API RESTful em Java Spring.
+  technical_requirement: Java, Spring Boot, Spring Web, Spring Data JPA, Hibernate, H2 Database, PostgreSQL, Lombok, Maven, HTML, CSS (Tailwind), JavaScript, React, Babel, RESTful API, Docker, Docker Compose, Git, GitHub Actions, CI/CD, Postman/Insomnia, SQL, JPQL, DTO, SOLID
+  path_hook: hookfigma.hook11, hookfigma.hook14 , hookfigma.hook9 , hookfigma.hook7
 -->
 # ✨ Projeto Intensivão Java Spring - Maio/25
 
