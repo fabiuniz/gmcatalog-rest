@@ -1,50 +1,44 @@
-# Use official OpenJDK 17 slim image
-FROM openjdk:17-jdk-slim
+# --- Estágio 1: Build da aplicação ---
+FROM eclipse-temurin:17-jdk-jammy AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml first for better Docker layer caching
+# Copia dependências do Maven
 COPY .mvn/ .mvn/
 COPY mvnw pom.xml ./
-
-# Make mvnw executable
 RUN chmod +x ./mvnw
 
-# Download dependencies (this layer will be cached unless pom.xml changes)
+# Baixa as dependências (camada cacheada)
 RUN ./mvnw dependency:go-offline -B
 
-# Copy source code
+# Copia o código-fonte e compila
 COPY src ./src/
-
-# Build the application
 RUN ./mvnw clean package -DskipTests -B
 
-# Create a new stage for the runtime
-FROM openjdk:17-jdk-slim
+
+# --- Estágio 2: Runtime leve ---
+FROM eclipse-temurin:17-jdk-jammy
+
+# Cria o usuário não-root primeiro por segurança
+RUN useradd -r -s /bin/false -m appuser
 
 WORKDIR /app
 
-# Install curl for health checks (optional)
+# Instala curl para o health check
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# Copy the JAR file from the build stage
-COPY --from=0 /app/target/*.jar app.jar
+# Copia o JAR do estágio de build nomeado como 'builder' e ajusta o dono para /app
+COPY --chown=appuser:appuser --from=builder /app/target/*.jar app.jar
 
-# Create non-root user for security
-RUN useradd -r -s /bin/false -m appuser
-RUN chown appuser:appuser app.jar
+# Altera para o usuário não-root
 USER appuser
 
-# Expose port 8080
+# Exposição de porta e health check
 EXPOSE 8080
-
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
   CMD curl -f http://localhost:8080/actuator/health || exit 1
 
-# Set JVM options for containerized environment
+# Otimizações de JVM para containers
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
 
-# Run the application
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
